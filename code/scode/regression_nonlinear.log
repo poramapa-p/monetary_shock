@@ -1,0 +1,1680 @@
+
+  ___  ____  ____  ____  ____ (R)
+ /__    /   ____/   /   ____/
+___/   /   /___/   /   /___/   13.0   Copyright 1985-2013 StataCorp LP
+  Statistics/Data Analysis            StataCorp
+                                      4905 Lakeway Drive
+     Special Edition                  College Station, Texas 77845 USA
+                                      800-STATA-PC        http://www.stata.com
+                                      979-696-4600        stata@stata.com
+                                      979-696-4601 (fax)
+
+3-user Stata network perpetual license:
+       Serial number:  501306208483
+         Licensed to:  IDRE-UCLA
+                       IDRE-UCLA
+
+Notes:
+      1.  (-v# option or -set maxvar-) 5000 maximum variables
+      2.  Command line editing disabled
+      3.  Stata running in batch mode
+
+. set more off
+
+. 
+. *- DON'T CHANGE. This is used by makefile to set the path programmatically.
+
+. *- If you want to run this file as a stand alone, cd to the directory contain
+> ing
+
+. *-  the do file BELOW.
+
+.  cd /Users/gragusa/Dropbox/measuring_ea_monetary_policy_shock/replication_fil
+> es
+/Users/gragusa/Dropbox (BigDataLuiss)/measuring_ea_monetary_policy_shock/replic
+> ation_files
+
+. 
+. //###########################################################################
+> ###
+unrecognized command:  / invalid command name
+r(199);
+
+. // Import dataset
+unrecognized command:  / invalid command name
+r(199);
+
+. //###########################################################################
+> ###
+unrecognized command:  / invalid command name
+r(199);
+
+. 
+. import delimited data/dailydataset.csv, clear
+(62 vars, 185 obs)
+. 
+. recode surprise_std (.=0)
+(surprise_std: 7 changes made)
+
+. label variable surprise_std "IJC"
+
+. 
+. label variable it2y_rel "IT 2Y"
+
+. label variable it5y_rel "IT 5Y"
+
+. label variable it10_rel "IT 10Y"
+
+. 
+. label variable es2y_rel  "ES 2Y"
+
+. label variable es5y_rel  "ES 5Y"
+
+. label variable es10_rel  "ES 10Y"
+
+. 
+. label variable it2y_con "IT 2Y"
+
+. label variable it5y_con "IT 5Y"
+
+. label variable it10_con "IT 10Y"
+
+. 
+. label variable es2y_con  "ES 2Y"
+
+. label variable es5y_con  "ES 5Y"
+
+. label variable es10_con  "ES 10Y"
+
+. 
+. label variable ois_de_re~1m "OIS 1M"
+
+. label variable ois_de_re~3m "OIS 3M"
+
+. label variable ois_de_re~6m "OIS 6M"
+
+. label variable ois_de_re~1y "OIS 1Y"
+
+. label variable ois_de_re~2y "OIS 2Y"
+
+. label variable ois_de_re~5y "OIS 5Y"
+
+. label variable ois_de_re~10y "OIS 10Y"
+
+. 
+. label variable ois_de_co~1m "OIS 1M"
+
+. label variable ois_de_co~3m "OIS 3M"
+
+. label variable ois_de_co~6m "OIS 6M"
+
+. label variable ois_de_co~1y "OIS 1Y"
+
+. label variable ois_de_co~2y "OIS 2Y"
+
+. label variable ois_de_co~5y "OIS 5Y"
+
+. label variable ois_de_co~10y "OIS 10Y"
+
+. 
+. label variable ratefactor1 "Target"
+
+. label variable conffactor1 "Timing"
+
+. label variable conffactor2 "FG"
+
+. label variable conffactor3 "QE"
+
+. 
+. gen neg_ratefactor1 = ratefactor1 < 0
+
+. gen neg_conffactor1 = conffactor1 < 0
+
+. gen neg_conffactor2 = conffactor2 < 0
+
+. gen neg_conffactor3 = conffactor3 < 0
+
+. gen interaction_ratefactor1 =  c.ratefactor1#i1.neg_ratefactor1
+
+. gen interaction_conffactor1 =  c.conffactor1#i1.neg_conffactor1
+(5 missing values generated)
+
+. gen interaction_conffactor2 =  c.conffactor2#i1.neg_conffactor2
+(5 missing values generated)
+
+. gen interaction_conffactor3 =  c.conffactor3#i1.neg_conffactor3
+(5 missing values generated)
+
+. 
+. label variable neg_ratefactor1 "Target<0"
+
+. label variable neg_conffactor1 "Timing<0"
+
+. label variable neg_conffactor2 "FG<0"
+
+. label variable neg_conffactor3 "QE<0"
+
+. label variable interaction_ratefactor1 "Targetx(Target<0)"
+
+. label variable interaction_conffactor1 "Timingx(Timing<0)"
+
+. label variable interaction_conffactor2 "FGx(FG<0)"
+
+. label variable interaction_conffactor3 "QEx(QE<0)"
+
+. 
+. //###########################################################################
+> ###
+unrecognized command:  / invalid command name
+r(199);
+
+. // Intraday Regressions
+unrecognized command:  / invalid command name
+r(199);
+
+. //###########################################################################
+> ###
+unrecognized command:  / invalid command name
+r(199);
+
+. 
+. // ==========================================================================
+> =
+unrecognized command:  / invalid command name
+r(199);
+
+. // TABLE 12 -- Release OIS/DE full sample
+unrecognized command:  / invalid command name
+r(199);
+
+. // ==========================================================================
+> =
+unrecognized command:  / invalid command name
+r(199);
+
+. 
+. reg ois_de_re~1m ratefactor1  interaction_ratefactor1  neg_ratefactor1, rob
+
+Linear regression                                      Number of obs =     185
+                                                       F(  3,   181) = 1470.96
+                                                       Prob > F      =  0.0000
+                                                       R-squared     =  0.9785
+                                                       Root MSE      =  .32576
+
+------------------------------------------------------------------------------
+             |               Robust
+ois_de_re~1m |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+ ratefactor1 |   1.009683   .0180318    55.99   0.000     .9741034    1.045262
+int~efactor1 |  -.0146171   .0516924    -0.28   0.778    -.1166143      .08738
+neg_ratefa~1 |    .020025   .0524872     0.38   0.703    -.0835405    .1235905
+       _cons |   .1816194   .0406581     4.47   0.000     .1013946    .2618441
+------------------------------------------------------------------------------
+
+. outreg2 using code/scode/output_table/reg_ois_de_hf_rel_nl.tex, replace tex(f
+> rag) nonot nocons label dec(2) sdec(2)
+code/scode/output_table/reg_ois_de_hf_rel_nl.tex
+dir : seeout
+
+. 
+. reg ois_de_re~3m ratefactor1  interaction_ratefactor1  neg_ratefactor1, rob
+
+Linear regression                                      Number of obs =     185
+                                                       F(  3,   181) =  245.31
+                                                       Prob > F      =  0.0000
+                                                       R-squared     =  0.9155
+                                                       Root MSE      =  .49678
+
+------------------------------------------------------------------------------
+             |               Robust
+ois_de_re~3m |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+ ratefactor1 |    .713355   .0429411    16.61   0.000     .6286255    .7980845
+int~efactor1 |   .0706261   .0592077     1.19   0.234       -.0462    .1874523
+neg_ratefa~1 |   .0672705   .0778374     0.86   0.389    -.0863148    .2208558
+       _cons |   .0830199   .0657935     1.26   0.209    -.0468009    .2128407
+------------------------------------------------------------------------------
+
+. outreg2 using code/scode/output_table/reg_ois_de_hf_rel_nl.tex, tex(frag) non
+> ot nocons label dec(2) sdec(2)
+code/scode/output_table/reg_ois_de_hf_rel_nl.tex
+dir : seeout
+
+. 
+. reg ois_de_re~6m ratefactor1  interaction_ratefactor1  neg_ratefactor1, rob
+
+Linear regression                                      Number of obs =     185
+                                                       F(  3,   181) =  158.74
+                                                       Prob > F      =  0.0000
+                                                       R-squared     =  0.8293
+                                                       Root MSE      =  .62556
+
+------------------------------------------------------------------------------
+             |               Robust
+ois_de_re~6m |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+ ratefactor1 |   .6356138   .0812653     7.82   0.000     .4752646    .7959629
+int~efactor1 |    .016376   .0874007     0.19   0.852    -.1560793    .1888312
+neg_ratefa~1 |   .1721799   .1027699     1.68   0.096    -.0306013    .3749611
+       _cons |   .0109837   .0937978     0.12   0.907    -.1740941    .1960615
+------------------------------------------------------------------------------
+
+. outreg2 using code/scode/output_table/reg_ois_de_hf_rel_nl.tex, tex(frag) non
+> ot nocons label dec(2) sdec(2)
+code/scode/output_table/reg_ois_de_hf_rel_nl.tex
+dir : seeout
+
+. 
+. reg ois_de_re~1y ratefactor1  interaction_ratefactor1  neg_ratefactor1, rob
+
+Linear regression                                      Number of obs =     185
+                                                       F(  3,   181) =   41.16
+                                                       Prob > F      =  0.0000
+                                                       R-squared     =  0.6229
+                                                       Root MSE      =   .8745
+
+------------------------------------------------------------------------------
+             |               Robust
+ois_de_re~1y |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+ ratefactor1 |   .4728556     .09804     4.82   0.000     .2794073     .666304
+int~efactor1 |   .1215572   .1149713     1.06   0.292    -.1052992    .3484137
+neg_ratefa~1 |   .3200589    .146365     2.19   0.030     .0312578      .60886
+       _cons |   .0007981   .1300012     0.01   0.995    -.2557147    .2573109
+------------------------------------------------------------------------------
+
+. outreg2 using code/scode/output_table/reg_ois_de_hf_rel_nl.tex, tex(frag) non
+> ot nocons label dec(2) sdec(2)
+code/scode/output_table/reg_ois_de_hf_rel_nl.tex
+dir : seeout
+
+. 
+. reg ois_de_re~2y ratefactor1  interaction_ratefactor1  neg_ratefactor1, rob
+
+Linear regression                                      Number of obs =     185
+                                                       F(  3,   181) =   10.45
+                                                       Prob > F      =  0.0000
+                                                       R-squared     =  0.3538
+                                                       Root MSE      =  1.1516
+
+------------------------------------------------------------------------------
+             |               Robust
+ois_de_re~2y |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+ ratefactor1 |    .354658   .1307612     2.71   0.007     .0966456    .6126703
+int~efactor1 |   .1161633   .1622767     0.72   0.475    -.2040341    .4363608
+neg_ratefa~1 |   .4002834   .2001315     2.00   0.047     .0053924    .7951743
+       _cons |  -.1468329   .1844231    -0.80   0.427    -.5107286    .2170628
+------------------------------------------------------------------------------
+
+. outreg2 using code/scode/output_table/reg_ois_de_hf_rel_nl.tex, tex(frag) non
+> ot nocons label dec(2) sdec(2)
+code/scode/output_table/reg_ois_de_hf_rel_nl.tex
+dir : seeout
+
+. 
+. reg ois_de_re~5y ratefactor1  interaction_ratefactor1  neg_ratefactor1, rob
+
+Linear regression                                      Number of obs =     185
+                                                       F(  3,   181) =    8.19
+                                                       Prob > F      =  0.0000
+                                                       R-squared     =  0.1376
+                                                       Root MSE      =  1.4256
+
+------------------------------------------------------------------------------
+             |               Robust
+ois_de_re~5y |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+ ratefactor1 |   .2046014   .1391208     1.47   0.143    -.0699058    .4791085
+int~efactor1 |    .134012   .1567122     0.86   0.394    -.1752057    .4432297
+neg_ratefa~1 |   .3284995   .2555806     1.29   0.200    -.1758011    .8328001
+       _cons |   -.167388   .2450658    -0.68   0.495    -.6509414    .3161654
+------------------------------------------------------------------------------
+
+. outreg2 using code/scode/output_table/reg_ois_de_hf_rel_nl.tex, tex(frag) non
+> ot nocons label dec(2) sdec(2)
+code/scode/output_table/reg_ois_de_hf_rel_nl.tex
+dir : seeout
+
+. 
+. reg ois_de_re~10y ratefactor1  interaction_ratefactor1  neg_ratefactor1, rob
+
+Linear regression                                      Number of obs =     185
+                                                       F(  3,   181) =    1.95
+                                                       Prob > F      =  0.1224
+                                                       R-squared     =  0.0285
+                                                       Root MSE      =  1.2089
+
+------------------------------------------------------------------------------
+             |               Robust
+ois_de_r~10y |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+ ratefactor1 |   .0376803   .1097376     0.34   0.732    -.1788493    .2542098
+int~efactor1 |   .0990431   .1251325     0.79   0.430     -.147863    .3459492
+neg_ratefa~1 |   .2038127   .2036861     1.00   0.318    -.1980918    .6057173
+       _cons |  -.1331721   .1872502    -0.71   0.478    -.5026462     .236302
+------------------------------------------------------------------------------
+
+. outreg2 using code/scode/output_table/reg_ois_de_hf_rel_nl.tex, tex(frag) non
+> ot nocons label dec(2) sdec(2)
+code/scode/output_table/reg_ois_de_hf_rel_nl.tex
+dir : seeout
+
+. 
+. 
+. // ==========================================================================
+> =
+unrecognized command:  / invalid command name
+r(199);
+
+. //  TABLE 12 -- Conference OIS/DE full sample
+unrecognized command:  / invalid command name
+r(199);
+
+. // ==========================================================================
+> =
+unrecognized command:  / invalid command name
+r(199);
+
+. 
+. reg ois_de_co~1m conffactor*  interaction_conffactor1 interaction_conffactor2
+>  interaction_conffactor3 neg_conffactor* surprise_std, rob
+
+Linear regression                                      Number of obs =     180
+                                                       F( 10,   169) =   10.01
+                                                       Prob > F      =  0.0000
+                                                       R-squared     =  0.6187
+                                                       Root MSE      =  .66824
+
+------------------------------------------------------------------------------
+             |               Robust
+ois_de_co~1m |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+ conffactor1 |   .2529865   .0918589     2.75   0.007     .0716478    .4343253
+ conffactor2 |  -.0739718   .0523281    -1.41   0.159    -.1772727    .0293291
+ conffactor3 |   .0489999   .0425712     1.15   0.251    -.0350401    .1330398
+int~ffactor1 |   .1840541   .1357326     1.36   0.177    -.0838956    .4520038
+interactio~2 |   .1255814   .0580915     2.16   0.032     .0109028    .2402599
+interactio~3 |  -.0835353    .058727    -1.42   0.157    -.1994683    .0323978
+neg_conffa~1 |   .0773783   .1497299     0.52   0.606    -.2182036    .3729602
+neg_conffa~2 |   .0184383   .1327771     0.14   0.890    -.2436771    .2805537
+neg_conffa~3 |  -.0531583   .1264941    -0.42   0.675    -.3028703    .1965537
+surprise_std |   .0499762    .054762     0.91   0.363    -.0581296     .158082
+       _cons |   .0620282   .1230878     0.50   0.615    -.1809594    .3050157
+------------------------------------------------------------------------------
+
+. outreg2 using code/scode/output_table/reg_ois_de_hf_conf_nl.tex, replace tex(
+> frag) nonot nocons label dec(2) sdec(2)
+code/scode/output_table/reg_ois_de_hf_conf_nl.tex
+dir : seeout
+
+. 
+. reg ois_de_co~3m conffactor*  interaction_conffactor1 interaction_conffactor2
+>  interaction_conffactor3 neg_conffactor* surprise_std, rob
+
+Linear regression                                      Number of obs =     180
+                                                       F( 10,   169) =  474.57
+                                                       Prob > F      =  0.0000
+                                                       R-squared     =  0.9607
+                                                       Root MSE      =  .42873
+
+------------------------------------------------------------------------------
+             |               Robust
+ois_de_co~3m |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+ conffactor1 |   .8665419   .0277544    31.22   0.000      .811752    .9213318
+ conffactor2 |   .1890325   .0263448     7.18   0.000     .1370252    .2410397
+ conffactor3 |   .0027201   .0345748     0.08   0.937    -.0655339    .0709742
+int~ffactor1 |  -.0310298   .0398287    -0.78   0.437    -.1096556     .047596
+interactio~2 |  -.0027558   .0310424    -0.09   0.929    -.0640366     .058525
+interactio~3 |   .0090572   .0585195     0.15   0.877    -.1064662    .1245806
+neg_conffa~1 |   .1171394   .0735444     1.59   0.113    -.0280446    .2623234
+neg_conffa~2 |   .2056031   .0825319     2.49   0.014     .0426769    .3685292
+neg_conffa~3 |   -.124747   .1003396    -1.24   0.215    -.3228275    .0733335
+surprise_std |  -.0409706    .032279    -1.27   0.206    -.1046926    .0227514
+       _cons |  -.2302628   .0707558    -3.25   0.001    -.3699419   -.0905836
+------------------------------------------------------------------------------
+
+. outreg2 using code/scode/output_table/reg_ois_de_hf_conf_nl.tex, tex(frag) no
+> not nocons label dec(2) sdec(2)
+code/scode/output_table/reg_ois_de_hf_conf_nl.tex
+dir : seeout
+
+. 
+. reg ois_de_co~6m conffactor*  interaction_conffactor1 interaction_conffactor2
+>  interaction_conffactor3 neg_conffactor* surprise_std, rob
+
+Linear regression                                      Number of obs =     180
+                                                       F( 10,   169) =  799.22
+                                                       Prob > F      =  0.0000
+                                                       R-squared     =  0.9853
+                                                       Root MSE      =  .34797
+
+------------------------------------------------------------------------------
+             |               Robust
+ois_de_co~6m |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+ conffactor1 |   1.007313   .0294245    34.23   0.000     .9492256    1.065399
+ conffactor2 |   .4459043   .0156544    28.48   0.000      .415001    .4768076
+ conffactor3 |  -.0122605   .0193884    -0.63   0.528     -.050535    .0260141
+int~ffactor1 |  -.0190148   .0400766    -0.47   0.636      -.09813    .0601003
+interactio~2 |  -.0583988   .0188381    -3.10   0.002     -.095587   -.0212106
+interactio~3 |  -.0156439   .0263048    -0.59   0.553    -.0675723    .0362844
+neg_conffa~1 |   .0048972   .0623484     0.08   0.937    -.1181848    .1279792
+neg_conffa~2 |   .0016575   .0613726     0.03   0.978    -.1194981    .1228131
+neg_conffa~3 |   .0324134   .0715674     0.45   0.651    -.1088679    .1736948
+surprise_std |   .0169118   .0321009     0.53   0.599    -.0464587    .0802823
+       _cons |  -.2474892   .0563911    -4.39   0.000    -.3588108   -.1361676
+------------------------------------------------------------------------------
+
+. outreg2 using code/scode/output_table/reg_ois_de_hf_conf_nl.tex, tex(frag) no
+> not nocons label dec(2) sdec(2)
+code/scode/output_table/reg_ois_de_hf_conf_nl.tex
+dir : seeout
+
+. 
+. reg ois_de_co~1y conffactor*  interaction_conffactor1 interaction_conffactor2
+>  interaction_conffactor3 neg_conffactor* surprise_std, rob
+
+Linear regression                                      Number of obs =     180
+                                                       F( 10,   169) = 1688.50
+                                                       Prob > F      =  0.0000
+                                                       R-squared     =  0.9918
+                                                       Root MSE      =  .36072
+
+------------------------------------------------------------------------------
+             |               Robust
+ois_de_co~1y |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+ conffactor1 |    1.16784    .039086    29.88   0.000      1.09068       1.245
+ conffactor2 |   .7565609     .02583    29.29   0.000       .70557    .8075518
+ conffactor3 |   .0073676   .0317783     0.23   0.817     -.055366    .0701011
+int~ffactor1 |     -.0357   .0438708    -0.81   0.417    -.1223054    .0509054
+interactio~2 |  -.0338015   .0300425    -1.13   0.262    -.0931085    .0255055
+interactio~3 |   .0454437   .0411739     1.10   0.271    -.0358377    .1267252
+neg_conffa~1 |    -.14469   .0633717    -2.28   0.024    -.2697921   -.0195879
+neg_conffa~2 |  -.2009057   .0728183    -2.76   0.006    -.3446563   -.0571551
+neg_conffa~3 |   .1857756   .0732374     2.54   0.012     .0411977    .3303535
+surprise_std |   .0009715   .0276507     0.04   0.972    -.0536136    .0555567
+       _cons |  -.1863938   .0681197    -2.74   0.007    -.3208689   -.0519187
+------------------------------------------------------------------------------
+
+. outreg2 using code/scode/output_table/reg_ois_de_hf_conf_nl.tex, tex(frag) no
+> not nocons label dec(2) sdec(2)
+code/scode/output_table/reg_ois_de_hf_conf_nl.tex
+dir : seeout
+
+. 
+. reg ois_de_co~2y conffactor*  interaction_conffactor1 interaction_conffactor2
+>  interaction_conffactor3 neg_conffactor* surprise_std, rob
+
+Linear regression                                      Number of obs =     180
+                                                       F( 10,   169) = 3386.25
+                                                       Prob > F      =  0.0000
+                                                       R-squared     =  0.9926
+                                                       Root MSE      =  .38418
+
+------------------------------------------------------------------------------
+             |               Robust
+ois_de_co~2y |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+ conffactor1 |   1.014878   .0359353    28.24   0.000      .943938    1.085818
+ conffactor2 |   .9472705   .0533507    17.76   0.000     .8419509     1.05259
+ conffactor3 |   .1761402   .0388219     4.54   0.000     .0995018    .2527786
+int~ffactor1 |   -.005571   .0411989    -0.14   0.893    -.0869018    .0757598
+interactio~2 |   .0765065   .0546373     1.40   0.163    -.0313531     .184366
+interactio~3 |   .0083491   .0470777     0.18   0.859     -.084587    .1012853
+neg_conffa~1 |  -.0554823   .0566153    -0.98   0.328    -.1672466     .056282
+neg_conffa~2 |  -.0690047   .0956616    -0.72   0.472    -.2578503     .119841
+neg_conffa~3 |  -.1204554    .067437    -1.79   0.076    -.2535829     .012672
+surprise_std |  -.0004869   .0240548    -0.02   0.984    -.0479734    .0469996
+       _cons |  -.1364672   .1054025    -1.29   0.197    -.3445422    .0716079
+------------------------------------------------------------------------------
+
+. outreg2 using code/scode/output_table/reg_ois_de_hf_conf_nl.tex, tex(frag) no
+> not nocons label dec(2) sdec(2)
+code/scode/output_table/reg_ois_de_hf_conf_nl.tex
+dir : seeout
+
+. 
+. reg ois_de_co~5y conffactor*  interaction_conffactor1 interaction_conffactor2
+>  interaction_conffactor3 neg_conffactor* surprise_std, rob
+
+Linear regression                                      Number of obs =     180
+                                                       F( 10,   169) = 1125.15
+                                                       Prob > F      =  0.0000
+                                                       R-squared     =  0.9787
+                                                       Root MSE      =  .62265
+
+------------------------------------------------------------------------------
+             |               Robust
+ois_de_co~5y |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+ conffactor1 |   .6631457    .050577    13.11   0.000     .5633015    .7629898
+ conffactor2 |   .9853538   .0996726     9.89   0.000     .7885902    1.182117
+ conffactor3 |   .8828427   .0783212    11.27   0.000     .7282289    1.037457
+int~ffactor1 |   .0814206   .0527134     1.54   0.124     -.022641    .1854823
+interactio~2 |  -.0352754   .1023492    -0.34   0.731     -.237323    .1667722
+interactio~3 |  -.0663789     .09756    -0.68   0.497    -.2589722    .1262145
+neg_conffa~1 |   .2505741   .0803896     3.12   0.002     .0918769    .4092713
+neg_conffa~2 |   .3259385   .1670061     1.95   0.053    -.0037482    .6556253
+neg_conffa~3 |  -.0414924   .1171696    -0.35   0.724    -.2727971    .1898122
+surprise_std |  -.0013864   .0328446    -0.04   0.966     -.066225    .0634522
+       _cons |  -.4850633    .191999    -2.53   0.012    -.8640886    -.106038
+------------------------------------------------------------------------------
+
+. outreg2 using code/scode/output_table/reg_ois_de_hf_conf_nl.tex, tex(frag) no
+> not nocons label dec(2) sdec(2)
+code/scode/output_table/reg_ois_de_hf_conf_nl.tex
+dir : seeout
+
+. 
+. reg ois_de_co~10y conffactor*  interaction_conffactor1 interaction_conffactor
+> 2 interaction_conffactor3 neg_conffactor* surprise_std, rob
+
+Linear regression                                      Number of obs =     180
+                                                       F( 10,   169) =  584.14
+                                                       Prob > F      =  0.0000
+                                                       R-squared     =  0.9695
+                                                       Root MSE      =  .48873
+
+------------------------------------------------------------------------------
+             |               Robust
+ois_de_c~10y |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+ conffactor1 |   .3706542   .0424873     8.72   0.000     .2867801    .4545284
+ conffactor2 |   .4310398   .0755807     5.70   0.000     .2818358    .5802437
+ conffactor3 |   .9794407   .0609454    16.07   0.000     .8591282    1.099753
+int~ffactor1 |  -.0676977   .0442596    -1.53   0.128    -.1550706    .0196753
+interactio~2 |   .0138573   .0779432     0.18   0.859    -.1400105     .167725
+interactio~3 |   .0541657   .0767133     0.71   0.481     -.097274    .2056054
+neg_conffa~1 |  -.2055435   .0657556    -3.13   0.002    -.3353516   -.0757353
+neg_conffa~2 |   -.269632   .1284593    -2.10   0.037    -.5232236   -.0160404
+neg_conffa~3 |   .0629457    .094147     0.67   0.505      -.12291    .2488014
+surprise_std |   .0028714   .0267958     0.11   0.915    -.0500261     .055769
+       _cons |   .0863189   .1467612     0.59   0.557    -.2034024    .3760402
+------------------------------------------------------------------------------
+
+. outreg2 using code/scode/output_table/reg_ois_de_hf_conf_nl.tex, tex(frag) no
+> not nocons label dec(2) sdec(2)
+code/scode/output_table/reg_ois_de_hf_conf_nl.tex
+dir : seeout
+
+. 
+. 
+. // ==========================================================================
+> =
+unrecognized command:  / invalid command name
+r(199);
+
+. // TABLE 13 -- Release IT bonds subsamples
+unrecognized command:  / invalid command name
+r(199);
+
+. // ==========================================================================
+> =
+unrecognized command:  / invalid command name
+r(199);
+
+. 
+. reg it2y_rel ratefactor1  interaction_ratefactor1  neg_ratefactor1 if date<="
+> 2007-12-31", rob
+
+Linear regression                                      Number of obs =      72
+                                                       F(  3,    68) =    0.28
+                                                       Prob > F      =  0.8377
+                                                       R-squared     =  0.0409
+                                                       Root MSE      =  .93989
+
+------------------------------------------------------------------------------
+             |               Robust
+    it2y_rel |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+ ratefactor1 |   .1065543   .1497595     0.71   0.479    -.1922862    .4053948
+int~efactor1 |   .0259084   .2852857     0.09   0.928    -.5433703    .5951871
+neg_ratefa~1 |   .1197628   .3129003     0.38   0.703    -.5046201    .7441457
+       _cons |   .0856431   .2687623     0.32   0.751    -.4506636    .6219499
+------------------------------------------------------------------------------
+
+. outreg2 using code/scode/output_table/reg_sov_hf_rel_nl_itasub.tex, replace t
+> ex(frag) nonot nocons label dec(2) sdec(2)
+code/scode/output_table/reg_sov_hf_rel_nl_itasub.tex
+dir : seeout
+
+. 
+. reg it5y_rel ratefactor1  interaction_ratefactor1  neg_ratefactor1 if date<="
+> 2007-12-31", rob
+
+Linear regression                                      Number of obs =      72
+                                                       F(  3,    68) =    0.14
+                                                       Prob > F      =  0.9359
+                                                       R-squared     =  0.0127
+                                                       Root MSE      =  .89555
+
+------------------------------------------------------------------------------
+             |               Robust
+    it5y_rel |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+ ratefactor1 |  -.0663596       .116    -0.57   0.569     -.297834    .1651147
+int~efactor1 |   .1081241   .3855876     0.28   0.780     -.661304    .8775522
+neg_ratefa~1 |   .0134446   .3105647     0.04   0.966    -.6062776    .6331668
+       _cons |   .0716389   .2382311     0.30   0.765    -.4037437    .5470216
+------------------------------------------------------------------------------
+
+. outreg2 using code/scode/output_table/reg_sov_hf_rel_nl_itasub.tex, tex(frag)
+>  nonot nocons label dec(2) sdec(2) cttop(,"Jan-02/Dec-07")
+code/scode/output_table/reg_sov_hf_rel_nl_itasub.tex
+dir : seeout
+
+. 
+. reg it10_rel ratefactor1  interaction_ratefactor1  neg_ratefactor1 if date<="
+> 2007-12-31", rob
+
+Linear regression                                      Number of obs =      72
+                                                       F(  3,    68) =    3.04
+                                                       Prob > F      =  0.0350
+                                                       R-squared     =  0.0548
+                                                       Root MSE      =  .73495
+
+------------------------------------------------------------------------------
+             |               Robust
+    it10_rel |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+ ratefactor1 |  -.0807246   .0408074    -1.98   0.052    -.1621545    .0007054
+int~efactor1 |   .1371803   .3234238     0.42   0.673    -.5082019    .7825625
+neg_ratefa~1 |   .1995419   .2503105     0.80   0.428    -.2999448    .6990287
+       _cons |   -.134091   .1793657    -0.75   0.457    -.4920096    .2238277
+------------------------------------------------------------------------------
+
+. outreg2 using code/scode/output_table/reg_sov_hf_rel_nl_itasub.tex, tex(frag)
+>  nonot nocons label dec(2) sdec(2)
+code/scode/output_table/reg_sov_hf_rel_nl_itasub.tex
+dir : seeout
+
+. 
+. reg it2y_rel ratefactor1  interaction_ratefactor1  neg_ratefactor1 if date>"2
+> 007-12-31" & date<="2013-12-31", rob
+
+Linear regression                                      Number of obs =      71
+                                                       F(  3,    67) =   11.05
+                                                       Prob > F      =  0.0000
+                                                       R-squared     =  0.3107
+                                                       Root MSE      =  2.3239
+
+------------------------------------------------------------------------------
+             |               Robust
+    it2y_rel |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+ ratefactor1 |   .1840933   .2987251     0.62   0.540    -.4121644    .7803511
+int~efactor1 |   .5207414   .3232576     1.61   0.112    -.1244835    1.165966
+neg_ratefa~1 |   .8365252   .6729919     1.24   0.218    -.5067723    2.179823
+       _cons |  -.3690439     .61684    -0.60   0.552    -1.600262     .862174
+------------------------------------------------------------------------------
+
+. outreg2 using code/scode/output_table/reg_sov_hf_rel_nl_itasub.tex, tex(frag)
+>  nonot nocons label dec(2) sdec(2) 
+code/scode/output_table/reg_sov_hf_rel_nl_itasub.tex
+dir : seeout
+
+. 
+. reg it5y_rel ratefactor1  interaction_ratefactor1  neg_ratefactor1 if date>"2
+> 007-12-31" & date<="2013-12-31", rob
+
+Linear regression                                      Number of obs =      71
+                                                       F(  3,    67) =   23.30
+                                                       Prob > F      =  0.0000
+                                                       R-squared     =  0.2544
+                                                       Root MSE      =  2.4739
+
+------------------------------------------------------------------------------
+             |               Robust
+    it5y_rel |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+ ratefactor1 |   .1672255     .32534     0.51   0.609    -.4821559    .8166069
+int~efactor1 |   .4849263    .334597     1.45   0.152     -.182932    1.152785
+neg_ratefa~1 |   1.168405   .6934897     1.68   0.097     -.215806    2.552616
+       _cons |   -.473197   .6141702    -0.77   0.444    -1.699086    .7526919
+------------------------------------------------------------------------------
+
+. outreg2 using code/scode/output_table/reg_sov_hf_rel_nl_itasub.tex,  tex(frag
+> ) nonot nocons label dec(2) sdec(2) cttop(,"Jan-08/Dec-13")
+code/scode/output_table/reg_sov_hf_rel_nl_itasub.tex
+dir : seeout
+
+. 
+. reg it10_rel ratefactor1  interaction_ratefactor1  neg_ratefactor1 if date>"2
+> 007-12-31" & date<="2013-12-31", rob
+
+Linear regression                                      Number of obs =      71
+                                                       F(  3,    67) =    3.09
+                                                       Prob > F      =  0.0328
+                                                       R-squared     =  0.1051
+                                                       Root MSE      =  2.0248
+
+------------------------------------------------------------------------------
+             |               Robust
+    it10_rel |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+ ratefactor1 |   .0726784    .205503     0.35   0.725    -.3375074    .4828642
+int~efactor1 |   .2278362   .2308293     0.99   0.327    -.2329011    .6885734
+neg_ratefa~1 |   .8319271   .5707164     1.46   0.150    -.3072277    1.971082
+       _cons |  -.4153377   .5169738    -0.80   0.425    -1.447222    .6165464
+------------------------------------------------------------------------------
+
+. outreg2 using code/scode/output_table/reg_sov_hf_rel_nl_itasub.tex,  tex(frag
+> ) nonot nocons label dec(2) sdec(2) 
+code/scode/output_table/reg_sov_hf_rel_nl_itasub.tex
+dir : seeout
+
+. 
+. reg it2y_rel ratefactor1  interaction_ratefactor1  neg_ratefactor1 if date>="
+> 2014-01-01", rob
+
+Linear regression                                      Number of obs =      42
+                                                       F(  3,    38) =   40.48
+                                                       Prob > F      =  0.0000
+                                                       R-squared     =  0.2701
+                                                       Root MSE      =  2.7519
+
+------------------------------------------------------------------------------
+             |               Robust
+    it2y_rel |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+ ratefactor1 |   1.313011   .5295952     2.48   0.018     .2409017     2.38512
+int~efactor1 |   1.864911    .622962     2.99   0.005     .6037902    3.126031
+neg_ratefa~1 |   2.741897   1.653082     1.66   0.105    -.6045923    6.088387
+       _cons |  -2.150225   1.645703    -1.31   0.199    -5.481776    1.181327
+------------------------------------------------------------------------------
+
+. outreg2 using code/scode/output_table/reg_sov_hf_rel_nl_itasub.tex,  tex(frag
+> ) nonot nocons label dec(2) sdec(2)
+code/scode/output_table/reg_sov_hf_rel_nl_itasub.tex
+dir : seeout
+
+. 
+. reg it5y_rel ratefactor1  interaction_ratefactor1  neg_ratefactor1 if date>="
+> 2014-01-01", rob
+
+Linear regression                                      Number of obs =      42
+                                                       F(  3,    38) =   46.40
+                                                       Prob > F      =  0.0000
+                                                       R-squared     =  0.2646
+                                                       Root MSE      =  2.5418
+
+------------------------------------------------------------------------------
+             |               Robust
+    it5y_rel |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+ ratefactor1 |   1.178012   .5546058     2.12   0.040     .0552711    2.300753
+int~efactor1 |   1.702517   .6078483     2.80   0.008     .4719921    2.933041
+neg_ratefa~1 |   2.640743   1.412723     1.87   0.069    -.2191656    5.500651
+       _cons |  -2.318142   1.396244    -1.66   0.105    -5.144691    .5084067
+------------------------------------------------------------------------------
+
+. outreg2 using code/scode/output_table/reg_sov_hf_rel_nl_itasub.tex,  tex(frag
+> ) nonot nocons label dec(2) sdec(2) cttop(,"Jan-14/Sep-18")
+code/scode/output_table/reg_sov_hf_rel_nl_itasub.tex
+dir : seeout
+
+. 
+. reg it10_rel ratefactor1  interaction_ratefactor1  neg_ratefactor1 if date>="
+> 2014-01-01", rob
+
+Linear regression                                      Number of obs =      42
+                                                       F(  3,    38) =   35.25
+                                                       Prob > F      =  0.0000
+                                                       R-squared     =  0.2409
+                                                       Root MSE      =  2.6869
+
+------------------------------------------------------------------------------
+             |               Robust
+    it10_rel |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+ ratefactor1 |   .9328057   .7824044     1.19   0.241    -.6510892    2.516701
+int~efactor1 |   2.286186   .8437835     2.71   0.010     .5780357    3.994337
+neg_ratefa~1 |   2.400685   1.135422     2.11   0.041     .1021437    4.699227
+       _cons |  -1.953288   1.065315    -1.83   0.075    -4.109906    .2033301
+------------------------------------------------------------------------------
+
+. outreg2 using code/scode/output_table/reg_sov_hf_rel_nl_itasub.tex,  tex(frag
+> ) nonot nocons label dec(2) sdec(2)
+code/scode/output_table/reg_sov_hf_rel_nl_itasub.tex
+dir : seeout
+
+. 
+. 
+. // ==========================================================================
+> =
+unrecognized command:  / invalid command name
+r(199);
+
+. // TABLE 13 -- Conference IT bonds subsamples
+unrecognized command:  / invalid command name
+r(199);
+
+. // ==========================================================================
+> =
+unrecognized command:  / invalid command name
+r(199);
+
+. 
+. reg it2y_conf conffactor1 conffactor2  interaction_conffactor1 interaction_co
+> nffactor2 neg_conffactor1 neg_conffactor2 surprise_std if date<="2007-12-31",
+>  rob
+
+Linear regression                                      Number of obs =      67
+                                                       F(  7,    59) =  549.89
+                                                       Prob > F      =  0.0000
+                                                       R-squared     =  0.9662
+                                                       Root MSE      =  .63815
+
+------------------------------------------------------------------------------
+             |               Robust
+   it2y_conf |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+ conffactor1 |   1.134881   .0949306    11.95   0.000     .9449256    1.324837
+ conffactor2 |   .9349041   .1537412     6.08   0.000     .6272686     1.24254
+int~ffactor1 |  -.0866518   .1227116    -0.71   0.483    -.3321971    .1588934
+interactio~2 |   .1765127   .1662206     1.06   0.293     -.156094    .5091195
+neg_conffa~1 |   .1004259   .1862018     0.54   0.592    -.2721629    .4730148
+neg_conffa~2 |   .0790694   .2796373     0.28   0.778    -.4804835    .6386223
+surprise_std |  -.0671242   .0476789    -1.41   0.164    -.1625295    .0282811
+       _cons |  -.1626989   .2779898    -0.59   0.561    -.7189553    .3935575
+------------------------------------------------------------------------------
+
+. outreg2 using code/scode/output_table/reg_sov_hf_conf_nl_itasub.tex, replace 
+> tex(frag) nonot nocons label dec(2) sdec(2)
+code/scode/output_table/reg_sov_hf_conf_nl_itasub.tex
+dir : seeout
+
+. 
+. reg it5y_conf conffactor1 conffactor2  interaction_conffactor1 interaction_co
+> nffactor2  neg_conffactor1 neg_conffactor2 surprise_std if date<="2007-12-31"
+> , rob
+
+Linear regression                                      Number of obs =      67
+                                                       F(  7,    59) =  160.81
+                                                       Prob > F      =  0.0000
+                                                       R-squared     =  0.9213
+                                                       Root MSE      =   .8807
+
+------------------------------------------------------------------------------
+             |               Robust
+   it5y_conf |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+ conffactor1 |   .7054042   .1882396     3.75   0.000     .3287377    1.082071
+ conffactor2 |   .8094292   .1430607     5.66   0.000     .5231654    1.095693
+int~ffactor1 |   .1543366   .2028558     0.76   0.450    -.2515768    .5602501
+interactio~2 |   .2230774   .1588443     1.40   0.165    -.0947694    .5409242
+neg_conffa~1 |   .1524215   .2932717     0.52   0.605    -.4344137    .7392568
+neg_conffa~2 |  -.0888078   .3192564    -0.28   0.782    -.7276384    .5500228
+surprise_std |  -.1141571   .0676406    -1.69   0.097    -.2495057    .0211915
+       _cons |  -.0180024   .3673351    -0.05   0.961    -.7530383    .7170334
+------------------------------------------------------------------------------
+
+. outreg2 using code/scode/output_table/reg_sov_hf_conf_nl_itasub.tex, tex(frag
+> ) nonot nocons label dec(2) sdec(2) cttop(,"Jan-02/Dec-07")
+code/scode/output_table/reg_sov_hf_conf_nl_itasub.tex
+dir : seeout
+
+. 
+. reg it10_conf conffactor1 conffactor2  interaction_conffactor1 interaction_co
+> nffactor2  neg_conffactor1 neg_conffactor2 surprise_std if date<="2007-12-31"
+> , rob
+
+Linear regression                                      Number of obs =      67
+                                                       F(  7,    59) =   41.06
+                                                       Prob > F      =  0.0000
+                                                       R-squared     =  0.7906
+                                                       Root MSE      =  1.0193
+
+------------------------------------------------------------------------------
+             |               Robust
+   it10_conf |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+ conffactor1 |   .2302361   .2569086     0.90   0.374    -.2838368    .7443091
+ conffactor2 |   .5123695   .1222796     4.19   0.000     .2676886    .7570503
+int~ffactor1 |     .24007   .2685019     0.89   0.375     -.297201     .777341
+interactio~2 |   .1343628   .1454786     0.92   0.359    -.1567392    .4254649
+neg_conffa~1 |  -.1147957   .3802286    -0.30   0.764    -.8756313      .64604
+neg_conffa~2 |  -.3398327   .3455051    -0.98   0.329    -1.031187    .3515214
+surprise_std |  -.1536388   .0808487    -1.90   0.062    -.3154167    .0081391
+       _cons |   .2335863    .449014     0.52   0.605    -.6648887    1.132061
+------------------------------------------------------------------------------
+
+. outreg2 using code/scode/output_table/reg_sov_hf_conf_nl_itasub.tex,  tex(fra
+> g) nonot nocons label dec(2) sdec(2)
+code/scode/output_table/reg_sov_hf_conf_nl_itasub.tex
+dir : seeout
+
+. 
+. 
+. reg it2y_conf conffactor1 conffactor2  interaction_conffactor1 interaction_co
+> nffactor2 neg_conffactor1 neg_conffactor2 surprise_std if date>"2007-12-31" &
+>  date<="2013-12-31", rob
+
+Linear regression                                      Number of obs =      71
+                                                       F(  7,    63) =   24.47
+                                                       Prob > F      =  0.0000
+                                                       R-squared     =  0.4481
+                                                       Root MSE      =  6.2276
+
+------------------------------------------------------------------------------
+             |               Robust
+   it2y_conf |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+ conffactor1 |   .7596994   .3391481     2.24   0.029      .081966    1.437433
+ conffactor2 |   .7530543   .3317591     2.27   0.027     .0900865    1.416022
+int~ffactor1 |  -.5093824   .4788957    -1.06   0.292    -1.466379    .4476144
+interactio~2 |   .1986396   .3678101     0.54   0.591    -.5363703    .9336494
+neg_conffa~1 |  -1.536268   1.966279    -0.78   0.438    -5.465563    2.393028
+neg_conffa~2 |  -1.619747   2.176367    -0.74   0.459     -5.96887    2.729375
+surprise_std |    .104903   .5277082     0.20   0.843    -.9496377    1.159444
+       _cons |   1.234506    2.07848     0.59   0.555    -2.919005    5.388016
+------------------------------------------------------------------------------
+
+. outreg2 using code/scode/output_table/reg_sov_hf_conf_nl_itasub.tex,  tex(fra
+> g) nonot nocons label dec(2) sdec(2) 
+code/scode/output_table/reg_sov_hf_conf_nl_itasub.tex
+dir : seeout
+
+. 
+. reg it5y_conf conffactor1 conffactor2  interaction_conffactor1 interaction_co
+> nffactor2  neg_conffactor1 neg_conffactor2 surprise_std if date>"2007-12-31" 
+> & date<="2013-12-31", rob
+
+Linear regression                                      Number of obs =      71
+                                                       F(  7,    63) =   23.70
+                                                       Prob > F      =  0.0000
+                                                       R-squared     =  0.2802
+                                                       Root MSE      =  7.2287
+
+------------------------------------------------------------------------------
+             |               Robust
+   it5y_conf |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+ conffactor1 |   .6918826   .3571866     1.94   0.057    -.0218978    1.405663
+ conffactor2 |    .342252   .3635465     0.94   0.350    -.3842377    1.068742
+int~ffactor1 |  -.8297339   .4508681    -1.84   0.070    -1.730722     .071254
+interactio~2 |   .4213241   .3953517     1.07   0.291    -.3687231    1.211371
+neg_conffa~1 |  -.4322047   2.080396    -0.21   0.836    -4.589544    3.725135
+neg_conffa~2 |  -2.253215   2.423518    -0.93   0.356    -7.096228    2.589799
+surprise_std |  -.4428301   .5802553    -0.76   0.448    -1.602378    .7167176
+       _cons |   1.548258   2.625277     0.59   0.557    -3.697939    6.794455
+------------------------------------------------------------------------------
+
+. outreg2 using code/scode/output_table/reg_sov_hf_conf_nl_itasub.tex,  tex(fra
+> g) nonot nocons label dec(2) sdec(2) cttop(,"Jan-08/Dec-13")
+code/scode/output_table/reg_sov_hf_conf_nl_itasub.tex
+dir : seeout
+
+. 
+. reg it10_conf conffactor1 conffactor2  interaction_conffactor1 interaction_co
+> nffactor2  neg_conffactor1 neg_conffactor2 surprise_std if date>"2007-12-31" 
+> & date<="2013-12-31", rob
+
+Linear regression                                      Number of obs =      71
+                                                       F(  7,    63) =    6.40
+                                                       Prob > F      =  0.0000
+                                                       R-squared     =  0.1070
+                                                       Root MSE      =  6.3825
+
+------------------------------------------------------------------------------
+             |               Robust
+   it10_conf |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+ conffactor1 |   .3552238   .2212295     1.61   0.113     -.086868    .7973157
+ conffactor2 |  -.0320815   .3647762    -0.09   0.930    -.7610286    .6968657
+int~ffactor1 |  -.4588133   .2984069    -1.54   0.129    -1.055132    .1375052
+interactio~2 |   .2638906   .3957253     0.67   0.507    -.5269034    1.054685
+neg_conffa~1 |  -.5087336    1.94778    -0.26   0.795    -4.401062    3.383595
+neg_conffa~2 |  -2.458925   2.343584    -1.05   0.298    -7.142205    2.224355
+surprise_std |   -.441428   .4079931    -1.08   0.283    -1.256737    .3738811
+       _cons |   1.964106   2.854034     0.69   0.494    -3.739227    7.667438
+------------------------------------------------------------------------------
+
+. outreg2 using code/scode/output_table/reg_sov_hf_conf_nl_itasub.tex,  tex(fra
+> g) nonot nocons label dec(2) sdec(2) 
+code/scode/output_table/reg_sov_hf_conf_nl_itasub.tex
+dir : seeout
+
+. 
+. 
+. reg it2y_conf conffactor*  interaction_conffactor1 interaction_conffactor2 in
+> teraction_conffactor3 neg_conffactor* surprise_std if date>="2014-01-01", rob
+> 
+
+Linear regression                                      Number of obs =      42
+                                                       F( 10,    31) =   14.69
+                                                       Prob > F      =  0.0000
+                                                       R-squared     =  0.7909
+                                                       Root MSE      =  1.3836
+
+------------------------------------------------------------------------------
+             |               Robust
+   it2y_conf |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+ conffactor1 |    .450769   .3425431     1.32   0.198    -.2478522     1.14939
+ conffactor2 |   .7122944   .2896854     2.46   0.020     .1214771    1.303112
+ conffactor3 |   .6329372   .1500102     4.22   0.000     .3269893     .938885
+int~ffactor1 |   .9898463   .5030445     1.97   0.058    -.0361197    2.015812
+interactio~2 |  -.2290649   .3718162    -0.62   0.542    -.9873891    .5292592
+interactio~3 |  -.3827487   .1876574    -2.04   0.050    -.7654785   -.0000189
+neg_conffa~1 |    .252722    .601007     0.42   0.677    -.9730399    1.478484
+neg_conffa~2 |  -.8023371   .6360879    -1.26   0.217    -2.099647    .4949729
+neg_conffa~3 |  -.9450586    .696391    -1.36   0.185    -2.365357    .4752402
+surprise_std |   .0396022   .2571372     0.15   0.879    -.4848325    .5640369
+       _cons |  -.1689478   .4414909    -0.38   0.705    -1.069375    .7314789
+------------------------------------------------------------------------------
+
+. outreg2 using code/scode/output_table/reg_sov_hf_conf_nl_itasub.tex,  tex(fra
+> g) nonot nocons label dec(2) sdec(2)
+code/scode/output_table/reg_sov_hf_conf_nl_itasub.tex
+dir : seeout
+
+. 
+. reg it5y_conf conffactor*  interaction_conffactor1 interaction_conffactor2 in
+> teraction_conffactor3 neg_conffactor* surprise_std if date>="2014-01-01", rob
+> 
+
+Linear regression                                      Number of obs =      42
+                                                       F( 10,    31) =   20.64
+                                                       Prob > F      =  0.0000
+                                                       R-squared     =  0.7996
+                                                       Root MSE      =  2.0956
+
+------------------------------------------------------------------------------
+             |               Robust
+   it5y_conf |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+ conffactor1 |    .543634    .349464     1.56   0.130    -.1691026    1.256371
+ conffactor2 |    .833719   .4268402     1.95   0.060    -.0368273    1.704265
+ conffactor3 |   1.264714   .2186945     5.78   0.000     .8186834    1.710744
+int~ffactor1 |   1.270398   .5708524     2.23   0.033     .1061367    2.434659
+interactio~2 |  -.2447588   .4436418    -0.55   0.585    -1.149572    .6600546
+interactio~3 |  -1.025434   .2932847    -3.50   0.001    -1.623592   -.4272758
+neg_conffa~1 |   .0060173    1.00224     0.01   0.995    -2.038064    2.050099
+neg_conffa~2 |  -1.703124   .8910661    -1.91   0.065    -3.520465    .1142175
+neg_conffa~3 |  -1.428749    .917947    -1.56   0.130    -3.300914    .4434165
+surprise_std |   .2945572   .4190288     0.70   0.487    -.5600577    1.149172
+       _cons |   -.131078   .7345411    -0.18   0.860    -1.629185    1.367028
+------------------------------------------------------------------------------
+
+. outreg2 using code/scode/output_table/reg_sov_hf_conf_nl_itasub.tex,  tex(fra
+> g) nonot nocons label dec(2) sdec(2) cttop(,"Jan-14/Sep-18")
+code/scode/output_table/reg_sov_hf_conf_nl_itasub.tex
+dir : seeout
+
+. 
+. reg it10_conf conffactor*  interaction_conffactor1 interaction_conffactor2 in
+> teraction_conffactor3 neg_conffactor* surprise_std if date>="2014-01-01", rob
+> 
+
+Linear regression                                      Number of obs =      42
+                                                       F( 10,    31) =   27.80
+                                                       Prob > F      =  0.0000
+                                                       R-squared     =  0.8396
+                                                       Root MSE      =  2.5416
+
+------------------------------------------------------------------------------
+             |               Robust
+   it10_conf |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+ conffactor1 |   .1371104   .3645733     0.38   0.709    -.6064418    .8806626
+ conffactor2 |   1.102177   .5316895     2.07   0.047     .0177889    2.186565
+ conffactor3 |   1.946726   .3265561     5.96   0.000     1.280711    2.612742
+int~ffactor1 |   1.148454   .6751905     1.70   0.099    -.2286059    2.525515
+interactio~2 |  -.8183653   .6028549    -1.36   0.184    -2.047896    .4111653
+interactio~3 |  -.2106177   .3944702    -0.53   0.597    -1.015145    .5939097
+neg_conffa~1 |  -1.092916   1.180642    -0.93   0.362    -3.500851    1.315019
+neg_conffa~2 |  -2.355301   1.074496    -2.19   0.036    -4.546749   -.1638523
+neg_conffa~3 |   .6530189    1.11143     0.59   0.561    -1.613758    2.919796
+surprise_std |   .1698084   .4742314     0.36   0.723     -.797393     1.13701
+       _cons |   .3283755   .9507458     0.35   0.732    -1.610683    2.267434
+------------------------------------------------------------------------------
+
+. outreg2 using code/scode/output_table/reg_sov_hf_conf_nl_itasub.tex,  tex(fra
+> g) nonot nocons label dec(2) sdec(2)
+code/scode/output_table/reg_sov_hf_conf_nl_itasub.tex
+dir : seeout
+
+. 
+. 
+. // ==========================================================================
+> =
+unrecognized command:  / invalid command name
+r(199);
+
+. // TABLE 14 -- Release ES bonds subsamples
+unrecognized command:  / invalid command name
+r(199);
+
+. // ==========================================================================
+> =
+unrecognized command:  / invalid command name
+r(199);
+
+. 
+. reg es2y_rel ratefactor1  interaction_ratefactor1  neg_ratefactor1 if date<="
+> 2007-12-31", rob
+
+Linear regression                                      Number of obs =      72
+                                                       F(  3,    68) =    0.19
+                                                       Prob > F      =  0.9013
+                                                       R-squared     =  0.0170
+                                                       Root MSE      =  .95796
+
+------------------------------------------------------------------------------
+             |               Robust
+    es2y_rel |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+ ratefactor1 |   .0500893   .1402224     0.36   0.722    -.2297201    .3298988
+int~efactor1 |  -.0013457   .2853942    -0.00   0.996     -.570841    .5681496
+neg_ratefa~1 |  -.0926941    .341694    -0.27   0.787     -.774534    .5891457
+       _cons |   .2033198   .3079591     0.66   0.511     -.411203    .8178426
+------------------------------------------------------------------------------
+
+. outreg2 using code/scode/output_table/reg_sov_hf_rel_nl_esasub.tex, replace t
+> ex(frag) nonot nocons label dec(2) sdec(2)
+code/scode/output_table/reg_sov_hf_rel_nl_esasub.tex
+dir : seeout
+
+. 
+. reg es5y_rel ratefactor1  interaction_ratefactor1  neg_ratefactor1 if date<="
+> 2007-12-31", rob
+
+Linear regression                                      Number of obs =      72
+                                                       F(  3,    68) =    0.16
+                                                       Prob > F      =  0.9247
+                                                       R-squared     =  0.0149
+                                                       Root MSE      =  .92824
+
+------------------------------------------------------------------------------
+             |               Robust
+    es5y_rel |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+ ratefactor1 |  -.0768921    .125167    -0.61   0.541     -.326659    .1728748
+int~efactor1 |   .1112409   .4112216     0.27   0.788     -.709339    .9318207
+neg_ratefa~1 |   .0067495   .3189112     0.02   0.983    -.6296278    .6431268
+       _cons |   .0865011   .2399871     0.36   0.720    -.3923856    .5653878
+------------------------------------------------------------------------------
+
+. outreg2 using code/scode/output_table/reg_sov_hf_rel_nl_esasub.tex, tex(frag)
+>  nonot nocons label dec(2) sdec(2) cttop(,"Jan-02/Dec-07")
+code/scode/output_table/reg_sov_hf_rel_nl_esasub.tex
+dir : seeout
+
+. 
+. reg es10_rel ratefactor1  interaction_ratefactor1  neg_ratefactor1 if date<="
+> 2007-12-31", rob
+
+Linear regression                                      Number of obs =      72
+                                                       F(  3,    68) =    1.64
+                                                       Prob > F      =  0.1880
+                                                       R-squared     =  0.0543
+                                                       Root MSE      =  .73446
+
+------------------------------------------------------------------------------
+             |               Robust
+    es10_rel |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+ ratefactor1 |  -.0769395   .0590876    -1.30   0.197     -.194847     .040968
+int~efactor1 |   .0970642   .3416393     0.28   0.777    -.5846664    .7787948
+neg_ratefa~1 |   .1987571   .2488698     0.80   0.427    -.2978548     .695369
+       _cons |   -.167432   .1698463    -0.99   0.328    -.5063551     .171491
+------------------------------------------------------------------------------
+
+. outreg2 using code/scode/output_table/reg_sov_hf_rel_nl_esasub.tex, tex(frag)
+>  nonot nocons label dec(2) sdec(2)
+code/scode/output_table/reg_sov_hf_rel_nl_esasub.tex
+dir : seeout
+
+. 
+. 
+. reg es2y_rel ratefactor1  interaction_ratefactor1  neg_ratefactor1 if date>"2
+> 007-12-31" & date<="2013-12-31", rob
+
+Linear regression                                      Number of obs =      71
+                                                       F(  3,    67) =    9.14
+                                                       Prob > F      =  0.0000
+                                                       R-squared     =  0.2346
+                                                       Root MSE      =  2.4459
+
+------------------------------------------------------------------------------
+             |               Robust
+    es2y_rel |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+ ratefactor1 |    .153098   .3150593     0.49   0.629     -.475763     .781959
+int~efactor1 |   .4598603   .3363216     1.37   0.176    -.2114405    1.131161
+neg_ratefa~1 |   .7550832   .6255203     1.21   0.232    -.4934606    2.003627
+       _cons |  -.4893409   .4911029    -1.00   0.323    -1.469586    .4909047
+------------------------------------------------------------------------------
+
+. outreg2 using code/scode/output_table/reg_sov_hf_rel_nl_esasub.tex, tex(frag)
+>  nonot nocons label dec(2) sdec(2) 
+code/scode/output_table/reg_sov_hf_rel_nl_esasub.tex
+dir : seeout
+
+. 
+. reg es5y_rel ratefactor1  interaction_ratefactor1  neg_ratefactor1 if date>"2
+> 007-12-31" & date<="2013-12-31", rob
+
+Linear regression                                      Number of obs =      71
+                                                       F(  3,    67) =    2.45
+                                                       Prob > F      =  0.0709
+                                                       R-squared     =  0.1542
+                                                       Root MSE      =  2.1815
+
+------------------------------------------------------------------------------
+             |               Robust
+    es5y_rel |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+ ratefactor1 |   .1553365   .2243574     0.69   0.491    -.2924828    .6031558
+int~efactor1 |   .2585571   .2760107     0.94   0.352    -.2923625    .8094767
+neg_ratefa~1 |   .7299954   .5962881     1.22   0.225    -.4602006    1.920191
+       _cons |  -.6539953   .5052083    -1.29   0.200    -1.662395    .3544046
+------------------------------------------------------------------------------
+
+. outreg2 using code/scode/output_table/reg_sov_hf_rel_nl_esasub.tex,  tex(frag
+> ) nonot nocons label dec(2) sdec(2) cttop(,"Jan-08/Dec-13")
+code/scode/output_table/reg_sov_hf_rel_nl_esasub.tex
+dir : seeout
+
+. 
+. reg es10_rel ratefactor1  interaction_ratefactor1  neg_ratefactor1 if date>"2
+> 007-12-31" & date<="2013-12-31", rob
+
+Linear regression                                      Number of obs =      71
+                                                       F(  3,    67) =    2.28
+                                                       Prob > F      =  0.0874
+                                                       R-squared     =  0.1650
+                                                       Root MSE      =  1.9489
+
+------------------------------------------------------------------------------
+             |               Robust
+    es10_rel |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+ ratefactor1 |   .1229242   .2588486     0.47   0.636    -.3937397    .6395882
+int~efactor1 |   .2658999   .3011689     0.88   0.380    -.3352357    .8670354
+neg_ratefa~1 |     .53264   .5318866     1.00   0.320      -.52901     1.59429
+       _cons |  -.2840678   .4875862    -0.58   0.562    -1.257294    .6891583
+------------------------------------------------------------------------------
+
+. outreg2 using code/scode/output_table/reg_sov_hf_rel_nl_esasub.tex,  tex(frag
+> ) nonot nocons label dec(2) 
+code/scode/output_table/reg_sov_hf_rel_nl_esasub.tex
+dir : seeout
+
+. 
+. 
+. reg es2y_rel ratefactor1  interaction_ratefactor1  neg_ratefactor1 if date>="
+> 2014-01-01", rob
+
+Linear regression                                      Number of obs =      42
+                                                       F(  3,    38) =   19.39
+                                                       Prob > F      =  0.0000
+                                                       R-squared     =  0.6769
+                                                       Root MSE      =  .96163
+
+------------------------------------------------------------------------------
+             |               Robust
+    es2y_rel |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+ ratefactor1 |   .8913514   .2391178     3.73   0.001     .4072826     1.37542
+int~efactor1 |   1.983816    .493874     4.02   0.000     .9840204    2.983612
+neg_ratefa~1 |   1.215368   .3846713     3.16   0.003     .4366421    1.994095
+       _cons |  -.8034192   .3407655    -2.36   0.024    -1.493263   -.1135756
+------------------------------------------------------------------------------
+
+. outreg2 using code/scode/output_table/reg_sov_hf_rel_nl_esasub.tex,  tex(frag
+> ) nonot nocons label dec(2) sdec(2)
+code/scode/output_table/reg_sov_hf_rel_nl_esasub.tex
+dir : seeout
+
+. 
+. reg es5y_rel ratefactor1  interaction_ratefactor1  neg_ratefactor1 if date>="
+> 2014-01-01", rob
+
+Linear regression                                      Number of obs =      42
+                                                       F(  3,    38) =   29.36
+                                                       Prob > F      =  0.0000
+                                                       R-squared     =  0.4668
+                                                       Root MSE      =  1.5014
+
+------------------------------------------------------------------------------
+             |               Robust
+    es5y_rel |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+ ratefactor1 |   .8964929   .4356064     2.06   0.046     .0146539    1.778332
+int~efactor1 |   2.100588   .5458713     3.85   0.000     .9955295    3.205647
+neg_ratefa~1 |   1.838132   .6792146     2.71   0.010      .463134     3.21313
+       _cons |  -1.291656   .6551938    -1.97   0.056    -2.618027    .0347145
+------------------------------------------------------------------------------
+
+. outreg2 using code/scode/output_table/reg_sov_hf_rel_nl_esasub.tex,  tex(frag
+> ) nonot nocons label dec(2) sdec(2) cttop(,"Jan-14/Sep-18")
+code/scode/output_table/reg_sov_hf_rel_nl_esasub.tex
+dir : seeout
+
+. 
+. reg es10_rel ratefactor1  interaction_ratefactor1  neg_ratefactor1 if date>="
+> 2014-01-01", rob
+
+Linear regression                                      Number of obs =      42
+                                                       F(  3,    38) =   41.73
+                                                       Prob > F      =  0.0000
+                                                       R-squared     =  0.3043
+                                                       Root MSE      =   2.401
+
+------------------------------------------------------------------------------
+             |               Robust
+    es10_rel |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+ ratefactor1 |   .7773232    .823267     0.94   0.351    -.8892937     2.44394
+int~efactor1 |    2.83396   .8861122     3.20   0.003      1.04012      4.6278
+neg_ratefa~1 |   2.219747    .858855     2.58   0.014     .4810858    3.958408
+       _cons |   -1.45467   .7661313    -1.90   0.065    -3.005622    .0962817
+------------------------------------------------------------------------------
+
+. outreg2 using code/scode/output_table/reg_sov_hf_rel_nl_esasub.tex,  tex(frag
+> ) nonot nocons label dec(2) sdec(2)
+code/scode/output_table/reg_sov_hf_rel_nl_esasub.tex
+dir : seeout
+
+. 
+. // ==========================================================================
+> =
+unrecognized command:  / invalid command name
+r(199);
+
+. // TABLE 14 -- Conference ES bonds subsamples
+unrecognized command:  / invalid command name
+r(199);
+
+. // ==========================================================================
+> =
+unrecognized command:  / invalid command name
+r(199);
+
+. 
+. reg es2y_conf conffactor1 conffactor2  interaction_conffactor1 interaction_co
+> nffactor2 neg_conffactor1 neg_conffactor2 surprise_std if date>"2007-12-31", 
+> rob
+
+Linear regression                                      Number of obs =     113
+                                                       F(  7,   105) =   43.05
+                                                       Prob > F      =  0.0000
+                                                       R-squared     =  0.5283
+                                                       Root MSE      =  3.7989
+
+------------------------------------------------------------------------------
+             |               Robust
+   es2y_conf |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+ conffactor1 |   .9571437   .1685846     5.68   0.000     .6228716    1.291416
+ conffactor2 |   .6087525   .2052462     2.97   0.004     .2017872    1.015718
+int~ffactor1 |  -.4658697   .2665521    -1.75   0.083    -.9943932    .0626538
+interactio~2 |   .3215528   .2348154     1.37   0.174    -.1440429    .7871484
+neg_conffa~1 |   .6297913   .8712792     0.72   0.471    -1.097794    2.357377
+neg_conffa~2 |  -.4394085   .9592647    -0.46   0.648    -2.341453    1.462636
+surprise_std |   .0342132   .3164056     0.11   0.914    -.5931607    .6615871
+       _cons |  -.5752685   .7843563    -0.73   0.465    -2.130502    .9799652
+------------------------------------------------------------------------------
+
+. outreg2 using code/scode/output_table/reg_sov_hf_conf_nl_esasub.tex, replace 
+> tex(frag) nonot nocons label dec(2) sdec(2)
+code/scode/output_table/reg_sov_hf_conf_nl_esasub.tex
+dir : seeout
+
+. 
+. reg es5y_conf conffactor1 conffactor2  interaction_conffactor1 interaction_co
+> nffactor2  neg_conffactor1 neg_conffactor2 surprise_std if date>"2007-12-31",
+>  rob
+
+Linear regression                                      Number of obs =     113
+                                                       F(  7,   105) =   23.55
+                                                       Prob > F      =  0.0000
+                                                       R-squared     =  0.3388
+                                                       Root MSE      =  4.7083
+
+------------------------------------------------------------------------------
+             |               Robust
+   es5y_conf |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+ conffactor1 |   .7142875   .2249959     3.17   0.002     .2681621    1.160413
+ conffactor2 |   .4376773   .2244148     1.95   0.054    -.0072957    .8826504
+int~ffactor1 |  -.5061054   .3170842    -1.60   0.113    -1.134825    .1226139
+interactio~2 |   .2983728   .2505303     1.19   0.236    -.1983824    .7951281
+neg_conffa~1 |   .0475786   1.079781     0.04   0.965    -2.093427    2.188584
+neg_conffa~2 |  -.8746834   1.147033    -0.76   0.447    -3.149037    1.399671
+surprise_std |  -.4600001   .3752481    -1.23   0.223    -1.204048    .2840475
+       _cons |   .0791332   1.058739     0.07   0.941     -2.02015    2.178417
+------------------------------------------------------------------------------
+
+. outreg2 using code/scode/output_table/reg_sov_hf_conf_nl_esasub.tex,  tex(fra
+> g) nonot nocons label dec(2) sdec(2) cttop(,"Jan-02/Dec-07")
+code/scode/output_table/reg_sov_hf_conf_nl_esasub.tex
+dir : seeout
+
+. 
+. reg es10_conf conffactor1 conffactor2  interaction_conffactor1 interaction_co
+> nffactor2  neg_conffactor1 neg_conffactor2 surprise_std if date>"2007-12-31",
+>  rob
+
+Linear regression                                      Number of obs =     113
+                                                       F(  7,   105) =   10.28
+                                                       Prob > F      =  0.0000
+                                                       R-squared     =  0.1303
+                                                       Root MSE      =  5.2131
+
+------------------------------------------------------------------------------
+             |               Robust
+   es10_conf |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+ conffactor1 |   .2984024   .1628107     1.83   0.070    -.0244212     .621226
+ conffactor2 |   .2274238   .2216105     1.03   0.307    -.2119889    .6668365
+int~ffactor1 |  -.2788962   .2615818    -1.07   0.289    -.7975646    .2397722
+interactio~2 |   .0128486   .2396166     0.05   0.957    -.4622668     .487964
+neg_conffa~1 |  -.6062471   1.184931    -0.51   0.610    -2.955746    1.743252
+neg_conffa~2 |   -1.63685   1.278261    -1.28   0.203    -4.171405    .8977059
+surprise_std |  -.6294598   .3731958    -1.69   0.095    -1.369438    .1105186
+       _cons |   1.053202   1.275775     0.83   0.411    -1.476424    3.582827
+------------------------------------------------------------------------------
+
+. outreg2 using code/scode/output_table/reg_sov_hf_conf_nl_esasub.tex,  tex(fra
+> g) nonot nocons label dec(2) sdec(2)
+code/scode/output_table/reg_sov_hf_conf_nl_esasub.tex
+dir : seeout
+
+. 
+. 
+. reg es2y_conf conffactor1 conffactor2  interaction_conffactor1 interaction_co
+> nffactor2 neg_conffactor1 neg_conffactor2 surprise_std if date>"2007-12-31" &
+>  date<="2013-12-31", rob
+
+Linear regression                                      Number of obs =      71
+                                                       F(  7,    63) =   46.73
+                                                       Prob > F      =  0.0000
+                                                       R-squared     =  0.5536
+                                                       Root MSE      =  4.5842
+
+------------------------------------------------------------------------------
+             |               Robust
+   es2y_conf |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+ conffactor1 |   .9306631   .1863544     4.99   0.000     .5582636    1.303063
+ conffactor2 |   .6946377   .2603736     2.67   0.010     .1743225    1.214953
+int~ffactor1 |   -.453862   .2930744    -1.55   0.126    -1.039525    .1318005
+interactio~2 |   .2411536   .2928311     0.82   0.413    -.3440227    .8263299
+neg_conffa~1 |   1.352402   1.376885     0.98   0.330    -1.399084    4.103887
+neg_conffa~2 |  -.4345555   1.608833    -0.27   0.788    -3.649551     2.78044
+surprise_std |   .1348289   .3883864     0.35   0.730    -.6412995    .9109572
+       _cons |  -.7739075   1.463484    -0.53   0.599    -3.698447    2.150632
+------------------------------------------------------------------------------
+
+. outreg2 using code/scode/output_table/reg_sov_hf_conf_nl_esasub.tex,  tex(fra
+> g) nonot nocons label dec(2) sdec(2) 
+code/scode/output_table/reg_sov_hf_conf_nl_esasub.tex
+dir : seeout
+
+. 
+. reg es5y_conf conffactor1 conffactor2  interaction_conffactor1 interaction_co
+> nffactor2  neg_conffactor1 neg_conffactor2 surprise_std if date>"2007-12-31" 
+> & date<="2013-12-31", rob
+
+Linear regression                                      Number of obs =      71
+                                                       F(  7,    63) =   24.58
+                                                       Prob > F      =  0.0000
+                                                       R-squared     =  0.3616
+                                                       Root MSE      =  5.5467
+
+------------------------------------------------------------------------------
+             |               Robust
+   es5y_conf |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+ conffactor1 |   .6418096   .2432241     2.64   0.010     .1557649    1.127854
+ conffactor2 |   .4917739   .2933377     1.68   0.099    -.0944147    1.077962
+int~ffactor1 |  -.4418525   .3412282    -1.29   0.200    -1.123743    .2400378
+interactio~2 |   .2601514   .3295211     0.79   0.433     -.398344    .9186468
+neg_conffa~1 |   .6766604   1.679284     0.40   0.688     -2.67912    4.032441
+neg_conffa~2 |  -.6360848   1.900797    -0.33   0.739    -4.434525    3.162355
+surprise_std |  -.4351815   .4497662    -0.97   0.337    -1.333968    .4636045
+       _cons |   .1279965    1.96964     0.06   0.948    -3.808015    4.064008
+------------------------------------------------------------------------------
+
+. outreg2 using code/scode/output_table/reg_sov_hf_conf_nl_esasub.tex,  tex(fra
+> g) nonot nocons label dec(2) sdec(2) cttop(,"Jan-08/Dec-13")
+code/scode/output_table/reg_sov_hf_conf_nl_esasub.tex
+dir : seeout
+
+. 
+. reg es10_conf conffactor1 conffactor2  interaction_conffactor1 interaction_co
+> nffactor2  neg_conffactor1 neg_conffactor2 surprise_std if date>"2007-12-31" 
+> & date<="2013-12-31", rob
+
+Linear regression                                      Number of obs =      71
+                                                       F(  7,    63) =   10.96
+                                                       Prob > F      =  0.0000
+                                                       R-squared     =  0.1368
+                                                       Root MSE      =  5.7355
+
+------------------------------------------------------------------------------
+             |               Robust
+   es10_conf |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+ conffactor1 |   .2604413   .1758867     1.48   0.144    -.0910401    .6119228
+ conffactor2 |   .1407114    .321388     0.44   0.663    -.5015313    .7829541
+int~ffactor1 |  -.1892267   .2836719    -0.67   0.507    -.7560998    .3776463
+interactio~2 |   .0869513   .3476516     0.25   0.803    -.6077749    .7816775
+neg_conffa~1 |   .4959247   1.756417     0.28   0.779    -3.013995    4.005845
+neg_conffa~2 |  -1.906366   2.047897    -0.93   0.355    -5.998762    2.186031
+surprise_std |   -.592742   .4121001    -1.44   0.155    -1.416258    .2307744
+       _cons |   1.250988   2.357292     0.53   0.598    -3.459684     5.96166
+------------------------------------------------------------------------------
+
+. outreg2 using code/scode/output_table/reg_sov_hf_conf_nl_esasub.tex,  tex(fra
+> g) nonot nocons label dec(2) sdec(2)
+code/scode/output_table/reg_sov_hf_conf_nl_esasub.tex
+dir : seeout
+
+. 
+. 
+. reg es2y_conf conffactor*  interaction_conffactor1 interaction_conffactor2 in
+> teraction_conffactor3 neg_conffactor* surprise_std if date>="2014-01-01", rob
+> 
+
+Linear regression                                      Number of obs =      42
+                                                       F( 10,    31) =   21.58
+                                                       Prob > F      =  0.0000
+                                                       R-squared     =  0.8429
+                                                       Root MSE      =  1.1187
+
+------------------------------------------------------------------------------
+             |               Robust
+   es2y_conf |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+ conffactor1 |   .4283811   .2068585     2.07   0.047     .0064905    .8502718
+ conffactor2 |   .8854687   .2543854     3.48   0.002     .3666463    1.404291
+ conffactor3 |   .3919652   .1811778     2.16   0.038     .0224506    .7614798
+int~ffactor1 |   1.261744   .3448078     3.66   0.001     .5585039    1.964984
+interactio~2 |  -.5514104    .291157    -1.89   0.068    -1.145229    .0424082
+interactio~3 |  -.0055146    .225959    -0.02   0.981     -.466361    .4553319
+neg_conffa~1 |   .4093845   .5595959     0.73   0.470    -.7319189    1.550688
+neg_conffa~2 |  -.6557802   .4246014    -1.54   0.133     -1.52176       .2102
+neg_conffa~3 |  -1.177063    .471296    -2.50   0.018    -2.138277   -.2158482
+surprise_std |   .4285993   .1997529     2.15   0.040     .0212006    .8359981
+       _cons |  -.0921103    .369523    -0.25   0.805    -.8457575    .6615369
+------------------------------------------------------------------------------
+
+. outreg2 using code/scode/output_table/reg_sov_hf_conf_nl_esasub.tex,  tex(fra
+> g) nonot nocons label dec(2) sdec(2)
+code/scode/output_table/reg_sov_hf_conf_nl_esasub.tex
+dir : seeout
+
+. 
+. reg es5y_conf conffactor*  interaction_conffactor1 interaction_conffactor2 in
+> teraction_conffactor3 neg_conffactor* surprise_std if date>="2014-01-01", rob
+> 
+
+Linear regression                                      Number of obs =      42
+                                                       F( 10,    31) =   10.13
+                                                       Prob > F      =  0.0000
+                                                       R-squared     =  0.7254
+                                                       Root MSE      =  2.0366
+
+------------------------------------------------------------------------------
+             |               Robust
+   es5y_conf |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+ conffactor1 |   .6952658   .3324149     2.09   0.045     .0173011    1.373231
+ conffactor2 |   .9184099   .4663222     1.97   0.058    -.0326606     1.86948
+ conffactor3 |   .5779222   .2924835     1.98   0.057    -.0186017    1.174446
+int~ffactor1 |   1.044253    .559465     1.87   0.071    -.0967832     2.18529
+interactio~2 |  -.1332144    .488743    -0.27   0.787    -1.130012    .8635834
+interactio~3 |   .0106373    .365789     0.03   0.977    -.7353944    .7566689
+neg_conffa~1 |   .1192241   1.018908     0.12   0.908    -1.958852    2.197301
+neg_conffa~2 |  -1.002141   .8594886    -1.17   0.253    -2.755079    .7507978
+neg_conffa~3 |  -.8695066   .9227197    -0.94   0.353    -2.751406    1.012393
+surprise_std |   .1861716   .4089682     0.46   0.652    -.6479246    1.020268
+       _cons |  -.0557527    .668404    -0.08   0.934    -1.418972    1.307466
+------------------------------------------------------------------------------
+
+. outreg2 using code/scode/output_table/reg_sov_hf_conf_nl_esasub.tex,  tex(fra
+> g) nonot nocons label dec(2) sdec(2)  cttop(,"Jan-14/Sep-18")
+code/scode/output_table/reg_sov_hf_conf_nl_esasub.tex
+dir : seeout
+
+. 
+. reg es10_conf conffactor*  interaction_conffactor1 interaction_conffactor2 in
+> teraction_conffactor3 neg_conffactor* surprise_std if date>="2014-01-01", rob
+> 
+
+Linear regression                                      Number of obs =      42
+                                                       F( 10,    31) =   24.36
+                                                       Prob > F      =  0.0000
+                                                       R-squared     =  0.8255
+                                                       Root MSE      =   2.198
+
+------------------------------------------------------------------------------
+             |               Robust
+   es10_conf |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+ conffactor1 |   .0430669   .3661998     0.12   0.907    -.7038025    .7899363
+ conffactor2 |   1.067931   .4642304     2.30   0.028     .1211271    2.014736
+ conffactor3 |   1.468425   .3566515     4.12   0.000      .741029     2.19582
+int~ffactor1 |    1.08781    .564391     1.93   0.063     -.063273    2.238893
+interactio~2 |  -.4895533   .5861934    -0.84   0.410    -1.685103    .7059961
+interactio~3 |  -.0479875   .4117042    -0.12   0.908    -.8876637    .7916887
+neg_conffa~1 |  -1.128984   1.108933    -1.02   0.317    -3.390667    1.132699
+neg_conffa~2 |  -.9888831   .9375739    -1.05   0.300    -2.901078    .9233114
+neg_conffa~3 |   .1382197   .9782633     0.14   0.889    -1.856961    2.133401
+surprise_std |   .0724586   .4154708     0.17   0.863    -.7748997    .9198168
+       _cons |   .1763398   .6855345     0.26   0.799    -1.221817    1.574497
+------------------------------------------------------------------------------
+
+. outreg2 using code/scode/output_table/reg_sov_hf_conf_nl_esasub.tex,  tex(fra
+> g) nonot nocons label dec(2) sdec(2)
+code/scode/output_table/reg_sov_hf_conf_nl_esasub.tex
+dir : seeout
+
+. 

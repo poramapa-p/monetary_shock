@@ -1,0 +1,8 @@
+		(1)	(2)	(3)	(4)	(5)	(6)	(7)
+VARIABLES	LABELS	OIS 1M	OIS 3M	OIS 6M	OIS 1Y	OIS 2Y	OIS 5Y	OIS 10Y
+								
+ratefactor1	Target	1.00***	0.77***	0.67***	0.58***	0.47***	0.31***	0.10
+		(0.03)	(0.03)	(0.02)	(0.04)	(0.06)	(0.09)	(0.08)
+								
+Observations		71	71	71	71	71	71	71
+R-squared		0.98	0.97	0.95	0.79	0.53	0.20	0.04

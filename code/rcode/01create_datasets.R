@@ -1,0 +1,658 @@
+################################################################################
+## This file is part of the replication suite  of
+## "Measuring Euro Area Monetary Policy"
+## By Carlo Altavilla, Luca Brugnolini, Refet S. Gürkaynak, Roberto Motto, and
+## Giuseppe Ragusa
+##
+## This file produces the dataset used throughout the replication suite to 
+## produce tables and figures. 
+################################################################################
+
+##---------------------- Hyperparameters  -------------------------------------
+start_from <- "2001-12-31"
+last_dates <- "2018-09-13"
+
+if (!require("pacman", quietly = TRUE))
+  install.packages("pacman", repos = "cran.rstudio.com")
+
+##---------------------- Load Packages  ---------------------------------------
+pacman::p_load(tidyverse, 
+               readxl, 
+               grid, 
+               gridExtra, 
+               sandwich, 
+               zoo,
+               lubridate, 
+               stargazer, 
+               lme4, 
+               stringr, 
+               reshape2, 
+               forcats,
+               lmtest,
+               rprojroot,
+               rstudioapi,
+               Hmisc, install = TRUE, update = F)
+
+##---------------------- Setup path  ------------------------------------------
+
+base_path <- readLines("dir.conf")
+
+r_path <- paste0(base_path, "/code/rcode/")
+j_path <- paste0(base_path, "/code/jcode/")
+s_path <- paste0(base_path, "/raw_data/")
+d_path <- paste0(base_path, "/data/")
+
+
+
+bFrel <- read.csv(file = paste0(d_path, "df_RotatedFactor_rel.csv")) %>% 
+  mutate(Date = as.Date(Date)) %>% 
+  as_tibble()
+
+bFcon <- read.csv(file = paste0(d_path, "df_RotatedFactor_con.csv")) %>%  
+  mutate(Date = as.Date(Date)) %>% 
+  as_tibble
+
+##---- Attach factor to market-based surprise dataset -------------------------
+
+dataset_tot <- X_tot %>% 
+  mutate(Date = as.Date(Date))
+dataset_rel <- as.data.frame(Xrel) %>% 
+  mutate(Date = as.Date(X_rel$Date))
+dataset_con <- as.data.frame(Xcon) %>% 
+  mutate(Date = as.Date(X_con$Date))
+
+dataset_tot <- left_join(dataset_tot, bFrel)
+dataset_tot <- left_join(dataset_tot, bFcon)
+dataset_rel <- left_join(dataset_rel, bFrel)
+dataset_con <- left_join(dataset_con, bFcon)
+
+## Create Unscaled loading for speech
+
+loading_unscaled_rel <- c(
+  coef(lm(`1M`~RateFactor1, data = dataset_rel))[2],
+  coef(lm(`3M`~RateFactor1, data = dataset_rel))[2],
+  coef(lm(`6M`~RateFactor1, data = dataset_rel))[2],
+  coef(lm(`1Y`~RateFactor1, data = dataset_rel))[2],
+  coef(lm(`2Y`~RateFactor1, data = dataset_rel))[2],
+  coef(lm(`5Y`~RateFactor1, data = dataset_rel))[2],
+  coef(lm(`10Y`~RateFactor1, data = dataset_rel))[2])
+
+loading_unscaled_con1 <- c(
+  coef(lm(`1M`~ConfFactor1, data = dataset_con))[2],
+  coef(lm(`3M`~ConfFactor1, data = dataset_con))[2],
+  coef(lm(`6M`~ConfFactor1, data = dataset_con))[2],
+  coef(lm(`1Y`~ConfFactor1, data = dataset_con))[2],
+  coef(lm(`2Y`~ConfFactor1, data = dataset_con))[2],
+  coef(lm(`5Y`~ConfFactor1, data = dataset_con))[2],
+  coef(lm(`10Y`~ConfFactor1, data = dataset_con))[2])
+
+loading_unscaled_con2 <- c(
+  coef(lm(`1M`~ConfFactor2, data = dataset_con))[2],
+  coef(lm(`3M`~ConfFactor2, data = dataset_con))[2],
+  coef(lm(`6M`~ConfFactor2, data = dataset_con))[2],
+  coef(lm(`1Y`~ConfFactor2, data = dataset_con))[2],
+  coef(lm(`2Y`~ConfFactor2, data = dataset_con))[2],
+  coef(lm(`5Y`~ConfFactor2, data = dataset_con))[2],
+  coef(lm(`10Y`~ConfFactor2, data = dataset_con))[2])
+
+loading_unscaled_con3 <- c(
+  coef(lm(`1M`~ConfFactor3, data = dataset_con))[2],
+  coef(lm(`3M`~ConfFactor3, data = dataset_con))[2],
+  coef(lm(`6M`~ConfFactor3, data = dataset_con))[2],
+  coef(lm(`1Y`~ConfFactor3, data = dataset_con))[2],
+  coef(lm(`2Y`~ConfFactor3, data = dataset_con))[2],
+  coef(lm(`5Y`~ConfFactor3, data = dataset_con))[2],
+  coef(lm(`10Y`~ConfFactor3, data = dataset_con))[2])
+
+
+lu <- cbind(loading_unscaled_rel, loading_unscaled_con1, loading_unscaled_con2, 
+            loading_unscaled_con3)/100
+
+colnames(lu) <- c("Target", "Timing", "FG", "QE")
+write.csv(lu, file = paste0(d_path, "loadings_unscaled.csv"), row.names=F)
+
+## Scaling
+scale_1 <-coef(lm(`1M`~RateFactor1, data = dataset_rel))[2]
+scale_4 <-coef(lm(`6M`~ConfFactor1, data = dataset_con))[2]
+scale_5 <-coef(lm(`2Y`~ConfFactor2, data = dataset_con))[2]
+scale_6 <-coef(lm(`10Y`~ConfFactor3, data = dataset_con))[2]
+
+scale_rel_1 <- (scale_1)*100
+scale_con_1 <- (scale_4)*100
+scale_con_2 <- (scale_5)*100
+scale_con_3 <- (scale_6)*100
+
+dataset_rel <- dataset_rel %>% 
+  mutate(RateFactor1 = RateFactor1*scale_rel_1)
+
+dataset_con <- dataset_con %>% 
+  mutate(ConfFactor1 = ConfFactor1*scale_con_1,
+         ConfFactor2 = ConfFactor2*scale_con_2,
+         ConfFactor3 = ConfFactor3*scale_con_3)
+
+dataset_tot <- dataset_tot %>% 
+  mutate(ConfFactor1 = ConfFactor1*scale_con_1,
+         ConfFactor2 = ConfFactor2*scale_con_2,
+         ConfFactor3 = ConfFactor3*scale_con_3, 
+         RateFactor1 = RateFactor1*scale_rel_1)
+
+
+## Add ijc surprises
+
+## ---- Create ijc dataset ------------------------------------------------
+daily <- tibble(Date = seq(as.Date("1999-01-01"), 
+                           as.Date(last_dates), by = 1))
+
+dd <- dataset_tot %>%
+  dplyr::select(Date,
+                starts_with("Rate"),
+                starts_with("Conf"))
+
+ijc <- read.csv(paste0(s_path, "01ijc_surprise_oct_2018.csv"), 
+                stringsAsFactors = F) %>%
+  select(DATETIME_CET, SURPRISE_STD) %>% 
+  as_tibble()
+
+Sys.setlocale(locale="en_US.utf8") 
+
+ijc <-  ijc %>%
+  mutate(datetime = as.POSIXct(DATETIME_CET, 
+                               format = "%d-%B-%Y %H:%M:%S",
+                               TZ = "CET")) %>%
+  select(datetime, SURPRISE_STD) %>%
+  mutate(Date = as.Date(datetime))
+
+ijc_rel <- ijc %>% filter(hour(datetime) == 13)
+ijc_con <- ijc %>% filter(hour(ijc$datetime) != 13)
+
+ijct <- ijc %>% select(Date, SURPRISE_STD)
+
+dd     <- left_join(dd, ijct)
+
+## --------------- Stock Prices ------------------------------------------------
+
+eampd_r <- read_xlsx(paste0(s_path,"00EA_MPD_update_may2019.xlsx"), sheet = 1) %>%
+  mutate(Date = as.Date(date))
+eampd_c <- read_xlsx(paste0(s_path,"00EA_MPD_update_may2019.xlsx"), sheet = 2) %>%
+  mutate(Date = as.Date(date))
+eampd_m <- read_xlsx(paste0(s_path,"00EA_MPD_update_may2019.xlsx"), sheet = 3) %>%
+  mutate(Date = as.Date(date))
+
+
+
+stoxrel <- eampd_r %>% select("Date", starts_with("STOXX")) 
+stoxcon <- eampd_c %>% select("Date", starts_with("STOXX")) 
+stoxtot <- eampd_m %>% select("Date", starts_with("STOXX")) 
+
+sx7erel <- eampd_r %>% select("Date", starts_with("SX7")) 
+sx7econ <- eampd_c %>% select("Date", starts_with("SX7"))
+sx7etot <- eampd_m %>% select("Date", starts_with("SX7"))
+
+stox_rel <- left_join(dataset_rel, stoxrel)
+stox_con <- left_join(dataset_con, stoxcon)
+stox_tot <- left_join(dataset_tot, stoxtot)
+
+sx7e_rel <- left_join(dataset_rel, sx7erel)
+sx7e_con <- left_join(dataset_con, sx7econ)
+sx7e_tot <- left_join(dataset_tot, sx7etot)
+
+
+stox_rel <- left_join(stox_rel, ijc_rel, by = "Date") %>%
+  mutate(SURPRISE_STD = ifelse(is.na(SURPRISE_STD), 0, SURPRISE_STD),
+         STOXX50_smed = STOXX50_smed * 100) %>%
+  select(Date, STOXX50_smed, SURPRISE_STD, starts_with("Rate")) %>%
+  rename(STOXX50 = STOXX50_smed, JoblessClaim_Surprise = SURPRISE_STD) %>%
+  mutate(pos = factor(STOXX50 > 0))
+
+stox_con <- left_join(stox_con, ijc_con, by = "Date") %>%
+  mutate(SURPRISE_STD = ifelse(is.na(SURPRISE_STD), 0, SURPRISE_STD),
+         STOXX50_smed = STOXX50_smed * 100) %>%
+  select(Date, STOXX50_smed, SURPRISE_STD, starts_with("Conf")) %>%
+  rename(STOXX50 = STOXX50_smed, JoblessClaim_Surprise = SURPRISE_STD) %>%
+  mutate(pos = factor(STOXX50 > 0))
+
+stox_tot <- left_join(stox_tot, ijc_con, by = "Date") %>%
+  mutate(SURPRISE_STD = ifelse(is.na(SURPRISE_STD), 0, SURPRISE_STD),
+         STOXX50_smed = STOXX50_smed * 100) %>%
+  select(Date, STOXX50_smed, SURPRISE_STD, starts_with("Rate"), starts_with("Conf")) %>%
+  rename(STOXX50 = STOXX50_smed, JoblessClaim_Surprise = SURPRISE_STD) %>%
+  mutate(pos = factor(STOXX50 > 0))
+
+sx7e_rel <- left_join(sx7e_rel, ijc_rel, by = "Date") %>%
+  mutate(SURPRISE_STD = ifelse(is.na(SURPRISE_STD), 0, SURPRISE_STD),
+         SX7E_smed = SX7E_smed * 100) %>%
+  select(Date, SX7E_smed, SURPRISE_STD, starts_with("Rate")) %>% 
+  rename(SX7E = SX7E_smed, JoblessClaim_Surprise = SURPRISE_STD) %>%
+  mutate(pos = factor(SX7E > 0))
+
+
+sx7e_con <- left_join(sx7e_con, ijc_con, by = "Date") %>%
+  mutate(SURPRISE_STD = ifelse(is.na(SURPRISE_STD), 0, SURPRISE_STD),
+         SX7E_smed = SX7E_smed * 100) %>%
+  select(Date, SX7E_smed, SURPRISE_STD, starts_with("Conf")) %>% 
+  rename(SX7E = SX7E_smed, JoblessClaim_Surprise = SURPRISE_STD) %>%
+  mutate(pos = factor(SX7E > 0))
+
+sx7e_tot <- left_join(sx7e_tot, ijc_con, by = "Date") %>% 
+  mutate(SURPRISE_STD = ifelse(is.na(SURPRISE_STD), 0, SURPRISE_STD), 
+         SX7E_smed = SX7E_smed*100) %>%
+  select(Date, SX7E_smed, SURPRISE_STD, starts_with("Rate"), starts_with("Conf")) %>%
+  rename(SX7E = SX7E_smed, JoblessClaim_Surprise =SURPRISE_STD)%>%
+  mutate(pos = factor(SX7E>0))
+
+## Exchange Rate
+
+eurrel <- eampd_r %>% select("Date", starts_with("EUR_s")) 
+eurcon <- eampd_c %>% select("Date", starts_with("EUR_s"))
+eurtot <- eampd_m %>% select("Date", starts_with("EUR_s"))
+
+gbprel <- eampd_r %>% select("Date", starts_with("EURGBP"))
+gbpcon <- eampd_c %>% select("Date", starts_with("EURGBP"))
+gbptot <- eampd_m %>% select("Date", starts_with("EURGBP"))
+
+jpyrel <- eampd_r %>% select("Date", starts_with("EURJPY"))
+jpycon <- eampd_c %>% select("Date", starts_with("EURJPY"))
+jpytot <- eampd_m%>% select("Date", starts_with("EURJPY"))
+
+eur_rel <- left_join(dataset_rel, eurrel)
+eur_con <- left_join(dataset_con, eurcon)
+eur_tot <- left_join(dataset_tot, eurtot)
+
+gbp_rel <- left_join(dataset_rel, gbprel)
+gbp_con <- left_join(dataset_con, gbpcon)
+gbp_tot <- left_join(dataset_tot, gbptot)
+
+jpy_rel <- left_join(dataset_rel, jpyrel)
+jpy_con <- left_join(dataset_con, jpycon)
+jpy_tot <- left_join(dataset_tot, jpytot)
+
+eur_rel <- left_join(eur_rel, ijc_rel, by = "Date") %>%
+  mutate(SURPRISE_STD = ifelse(is.na(SURPRISE_STD), 0, SURPRISE_STD),
+         EUR_smed = EUR_smed * 100) %>%
+  select(Date, EUR_smed, SURPRISE_STD, starts_with("Rate")) %>%
+  rename(EUR = EUR_smed, JoblessClaim_Surprise = SURPRISE_STD) %>%
+  mutate(pos = factor(EUR > 0))
+
+eur_con <- left_join(eur_con, ijc_con, by = "Date") %>%
+  mutate(SURPRISE_STD = ifelse(is.na(SURPRISE_STD), 0, SURPRISE_STD),
+         EUR_smed = EUR_smed * 100) %>%
+  select(Date, EUR_smed, SURPRISE_STD, starts_with("Conf")) %>%
+  rename(EUR = EUR_smed, JoblessClaim_Surprise = SURPRISE_STD) %>%
+  mutate(pos = factor(EUR > 0))
+
+eur_tot <- left_join(eur_tot, ijc, by = "Date") %>%
+  mutate(SURPRISE_STD = ifelse(is.na(SURPRISE_STD), 0, SURPRISE_STD),
+         EUR_smed = EUR_smed * 100) %>%
+  select(Date, EUR_smed, SURPRISE_STD, starts_with("Rate"), starts_with("Conf")) %>%
+  rename(EUR = EUR_smed, JoblessClaim_Surprise = SURPRISE_STD) %>%
+  mutate(pos = factor(EUR > 0))
+
+gbp_rel <- left_join(gbp_rel, ijc_rel, by = "Date") %>%
+  mutate(SURPRISE_STD = ifelse(is.na(SURPRISE_STD), 0, SURPRISE_STD),
+         EURGBP_smed = EURGBP_smed * 100) %>%
+  select(Date, EURGBP_smed, SURPRISE_STD, starts_with("Rate")) %>%
+  rename(EURGBP = EURGBP_smed, JoblessClaim_Surprise = SURPRISE_STD) %>%
+  mutate(pos = factor(EURGBP > 0))
+
+gbp_con <- left_join(gbp_con, ijc_con, by = "Date") %>%
+  mutate(SURPRISE_STD = ifelse(is.na(SURPRISE_STD), 0, SURPRISE_STD),
+         EURGBP = EURGBP_smed * 100) %>%
+  select(Date, EURGBP, SURPRISE_STD, starts_with("Conf")) %>%
+  rename(JoblessClaim_Surprise = SURPRISE_STD) %>%
+  mutate(pos = factor(EURGBP > 0))
+
+gbp_tot <- left_join(gbp_tot, ijc, by = "Date") %>%
+  mutate(SURPRISE_STD = ifelse(is.na(SURPRISE_STD), 0, SURPRISE_STD),
+         EURGBP_smed = EURGBP_smed * 100) %>%
+  select(Date, EURGBP_smed, SURPRISE_STD, starts_with("Rate"), starts_with("Conf")) %>%
+  rename(EURGBP = EURGBP_smed, JoblessClaim_Surprise = SURPRISE_STD) %>%
+  mutate(pos = factor(EURGBP > 0))
+
+jpy_rel <- left_join(jpy_rel, ijc_rel, by = "Date") %>%
+  mutate(SURPRISE_STD = ifelse(is.na(SURPRISE_STD), 0, SURPRISE_STD),
+         EURJPY_smed = EURJPY_smed * 100) %>%
+  select(Date, EURJPY_smed, SURPRISE_STD, starts_with("Rate")) %>%
+  rename(EURJPY = EURJPY_smed, JoblessClaim_Surprise = SURPRISE_STD) %>%
+  mutate(pos = factor(EURJPY > 0))
+
+jpy_con <- left_join(jpy_con, ijc_con, by = "Date") %>%
+  mutate(SURPRISE_STD = ifelse(is.na(SURPRISE_STD), 0, SURPRISE_STD),
+         EURJPY_smed = EURJPY_smed * 100) %>%
+  select(Date, EURJPY_smed, SURPRISE_STD, starts_with("Conf")) %>%
+  rename(EURJPY = EURJPY_smed, JoblessClaim_Surprise = SURPRISE_STD) %>%
+  mutate(pos = factor(EURJPY > 0))
+
+jpy_tot <- left_join(jpy_tot, ijc, by = "Date") %>%
+  mutate(SURPRISE_STD = ifelse(is.na(SURPRISE_STD), 0, SURPRISE_STD),
+         EURJPY_smed = EURJPY_smed * 100) %>%
+  select(Date, EURJPY_smed, SURPRISE_STD, starts_with("Rate"), starts_with("Conf")) %>%
+  rename(EURJPY = EURJPY_smed, JoblessClaim_Surprise = SURPRISE_STD) %>%
+  mutate(pos = factor(EURJPY > 0))
+
+
+## Daily dataset
+
+daily_data <- read.csv(paste0(s_path, "02daily_data_oct_2018.csv"), stringsAsFactors = F) %>% 
+  mutate(Date = as.POSIXct(Date, format = "%m/%d/%Y"), 
+         Date = as.Date(Date)) %>%
+  select(Date, AAA, AA, A, BBB, NFAAA, NFAA, NFA, NFBBB, EABANKBOND, 
+         EA.bank.bond.yield.senior, EA.bank.bond.yield.subordinated, 
+         Dow.Jones.Euro.Stoxx.Bank.Index, Dow.Jones.Euro.Stoxx..broad..index, 
+         Dow.Jones.Euro.Stoxx.Utilities.sector.Index, 
+         Dow.Jones.Euro.Stoxx.Insurance.Index, 
+         Nominal.Effective.Exchange.Rate..NEER., USD.EUR.exchange.rate)
+
+daily_data <- daily_data %>% as_tibble()
+
+daily_data <- daily_data  %>% mutate(
+  DAAA   = 100*(AAA-lag(AAA)),
+  DAA    = 100*(AA-lag(AA)),
+  DA     = 100*(A-lag(A)),
+  DBBB   = 100*(BBB-lag(BBB)),
+  DNFAAA = 100*(NFAAA-lag(NFAAA)),
+  DNFAA  = 100*(NFAA-lag(NFAA)),
+  DNFA   = 100*(NFA-lag(NFA)),
+  DNFBBB = 100*(NFBBB-lag(NFBBB)),
+  DEABANKBOND       = 100*(EABANKBOND-lag(EABANKBOND)),
+  DEABANKBONDSENIOR = 100*(`EA.bank.bond.yield.senior`-lag(`EA.bank.bond.yield.senior`)),
+  DEABANKBONDSUB    = 100*(`EA.bank.bond.yield.subordinated`-lag(`EA.bank.bond.yield.subordinated`)),
+  DSTOCKBANKINDEX   = 100*(log(`Dow.Jones.Euro.Stoxx.Bank.Index`) - lag(log(`Dow.Jones.Euro.Stoxx.Bank.Index`))),
+  DSTOCKBBROAD      = 100*(log(`Dow.Jones.Euro.Stoxx..broad..index`) - lag(log(`Dow.Jones.Euro.Stoxx..broad..index`))),
+  DSTOCKUTIL        = 100*(log(`Dow.Jones.Euro.Stoxx.Utilities.sector.Index`) - lag(log(`Dow.Jones.Euro.Stoxx.Utilities.sector.Index`))),
+  DSTOCKINDURANCE   = 100*(log(`Dow.Jones.Euro.Stoxx.Insurance.Index`)  - lag(log(`Dow.Jones.Euro.Stoxx.Insurance.Index`))),
+  DNEER             = 100*(log(`Nominal.Effective.Exchange.Rate..NEER.`)- lag(log(`Nominal.Effective.Exchange.Rate..NEER.`))),
+  DEURUSD           = 100*(log(`USD.EUR.exchange.rate`)- lag(log(`USD.EUR.exchange.rate`)))
+)
+
+
+dataset_daily <- left_join(dataset_rel, 
+                           daily_data %>% 
+                             mutate(Date = as.Date(Date))) %>%
+  select(-c(AAA, AA, A, BBB, NFAAA, NFAA, NFA, NFBBB, EABANKBOND, 
+            EA.bank.bond.yield.senior, EA.bank.bond.yield.subordinated,
+            Dow.Jones.Euro.Stoxx.Bank.Index, Dow.Jones.Euro.Stoxx..broad..index, 
+            Dow.Jones.Euro.Stoxx.Utilities.sector.Index, Dow.Jones.Euro.Stoxx.Insurance.Index, 
+            Nominal.Effective.Exchange.Rate..NEER., USD.EUR.exchange.rate))
+
+
+dataset_daily <- left_join(dataset_daily, dataset_con %>% 
+                             select(Date, contains("ConfFactor")))
+
+# dataset_daily <- dataset_daily %>% 
+# rename_at(vars(matches("^[0-9]")), funs(paste0("x",.)))
+
+dataset_daily <- left_join(dataset_daily, ijc, by = "Date")
+
+dataset_daily <- dataset_daily %>% select(-datetime) %>%
+  select(Date, RateFactor1, starts_with("Conf"), everything())
+
+## --- Create IT, FR, ES 2,5,10Y data -----------------------------------------
+
+intrabond_rate_rel <- eampd_r %>% 
+  select("Date", starts_with("IT"), starts_with("FR"), starts_with("ES")) %>%
+  mutate_if(is.numeric, f <- function(.) .*100) %>% 
+  rename_at(vars(ends_with("_smed")), funs(sub("_smed", "_rel", .)))
+
+intrabond_rate_conf <- eampd_c %>% 
+  select("Date", starts_with("IT"), starts_with("FR"), starts_with("ES")) %>%
+  mutate_if(is.numeric, f <- function(.) .*100) %>% 
+  rename_at(vars(ends_with("_smed")), funs(sub("_smed", "_conf", .)))
+
+intrabond_rate_tot <- eampd_m %>% 
+  select("Date", starts_with("IT"), starts_with("FR"), starts_with("ES")) %>%
+  mutate_if(is.numeric, f <- function(.) .*100) %>% 
+  rename_at(vars(ends_with("_smed")), funs(sub("_smed", "_tot", .)))
+
+
+events <- read_xlsx(path = paste0(s_path, "03events.xlsx"), sheet = 1)
+
+events <- events %>% 
+  mutate(Date = as_date(date)) %>% 
+  rename(rate_change = rate_chage) %>% 
+  select(Date, rate_change)
+
+
+dataset_daily <- left_join(dataset_daily, events)
+
+dataset_daily <- left_join(dataset_daily, 
+                           intrabond_rate_rel %>% mutate(Date=as_date(Date)))
+
+dataset_daily <- left_join(dataset_daily, 
+                           intrabond_rate_conf %>% mutate(Date=as_date(Date)), by = "Date") 
+
+
+dataset_daily <- left_join(dataset_daily, 
+                           dataset_rel %>% select(-starts_with("Rate")) %>% 
+                             rename_all(funs(c("ois_de_rel_1m","ois_de_rel_3m","ois_de_rel_6m",
+                                               "ois_de_rel_1y","ois_de_rel_2y","ois_de_rel_5y","ois_de_rel_10y",
+                                               "Date"))) %>%
+                             mutate_if(is.numeric, f <- function(.) .*100) %>%
+                             mutate(Date=as_date(Date)), by = "Date") 
+
+dataset_daily <- left_join(dataset_daily, 
+                           dataset_con %>% select(-starts_with("Conf")) %>% 
+                             rename_all(funs(c("ois_de_con_1m","ois_de_con_3m","ois_de_con_6m",
+                                               "ois_de_con_1y","ois_de_con_2y","ois_de_con_5y","ois_de_con_10y",
+                                               "Date"))) %>% 
+                             mutate_if(is.numeric, f <- function(.) .*100) %>%
+                             mutate(Date=as_date(Date)), by = "Date") 
+
+
+## Add intra-stock market
+
+dataset_daily <- left_join(dataset_daily, stox_con %>% select(Date, STOXX50)) %>%
+  rename(STOXX50E_con = STOXX50)
+
+dataset_daily <- left_join(dataset_daily, stox_rel %>% select(Date, STOXX50)) %>%
+  rename(STOXX50E_rel = STOXX50)
+
+dataset_daily <- left_join(dataset_daily, sx7e_con %>% select(Date, SX7E)) %>%
+  rename(SX7E_con = SX7E)
+
+dataset_daily <- left_join(dataset_daily, sx7e_rel %>% select(Date, SX7E)) %>%
+  rename(SX7E_rel = SX7E)
+
+## Exchange Rate
+
+dataset_daily <- left_join(dataset_daily, eur_con %>% select(Date, EUR)) %>%
+  rename(EUR_con = EUR)
+
+dataset_daily <- left_join(dataset_daily, eur_rel %>% select(Date, EUR)) %>%
+  rename(EUR_rel = EUR)
+
+
+## To be used by stata regression
+write.csv(dataset_daily %>% select(-matches("^[1-9]")), 
+          file = paste0(d_path, "dailydataset.csv"), row.names=F, na = "")
+
+
+## VAR Daily Dataset
+vdd      <- read_csv(paste0(s_path, "05daily_data_var.csv"), guess_max = 100000)
+
+vdd      <- left_join(vdd, dataset_tot %>% select(Date, RateFactor1, ConfFactor1, ConfFactor2, ConfFactor3))
+
+## Fill Missing NA with zero and rename
+vdd <- vdd %>% mutate(Target = ifelse(is.na(RateFactor1), 0, RateFactor1),
+                      Timing = ifelse(is.na(ConfFactor1), 0, ConfFactor1),
+                      FG = ifelse(is.na(ConfFactor2), 0, ConfFactor2),
+                      QE = ifelse(is.na(ConfFactor3), 0, ConfFactor3)) %>%
+  select(-c(RateFactor1, ConfFactor1, ConfFactor2, ConfFactor3)) %>%
+  select(Date, Target, Timing, FG, QE, everything())
+
+write.csv(vdd, file = paste0(d_path, "vardailydataset.csv"), row.names = F, na = "")
+
+## Used by matlab
+
+## Factors
+write.csv(dataset_tot %>% select(Date, RateFactor1, ConfFactor1, ConfFactor2, ConfFactor3), file = paste0(d_path, "ois_factors.csv"), row.names = F)
+
+## Construct Loadings 
+
+load_rel1 <- t(cbind(
+  c(
+    coeftest(lm1 <- lm(`1M`~RateFactor1, data=dataset_rel), vcov=vcovHC)[2,1:2],
+    R2 = summary(lm1)$r.squared
+  ),
+  
+  c(
+    coeftest(lm1 <- lm(`3M`~RateFactor1, data=dataset_rel), vcov=vcovHC)[2,1:2],
+    R2 = summary(lm1)$r.squared
+  ),
+  
+  c(
+    coeftest(lm1 <- lm(`6M`~RateFactor1, data=dataset_rel), vcov=vcovHC)[2,1:2],
+    R2 = summary(lm1)$r.squared
+  ),
+  
+  c(
+    coeftest(lm1 <- lm(`1Y`~RateFactor1, data=dataset_rel), vcov=vcovHC)[2,1:2],
+    R2 = summary(lm1)$r.squared
+  ),
+  
+  c(
+    coeftest(lm1 <- lm(`2Y`~RateFactor1, data=dataset_rel), vcov=vcovHC)[2,1:2],
+    R2 = summary(lm1)$r.squared
+  ),
+  
+  c(
+    coeftest(lm1 <- lm(`5Y`~RateFactor1, data=dataset_rel), vcov=vcovHC)[2,1:2],
+    R2 = summary(lm1)$r.squared
+  ),
+  
+  c(
+    coeftest(lm1 <- lm(`10Y`~RateFactor1, data=dataset_rel), vcov=vcovHC)[2,1:2],
+    R2 = summary(lm1)$r.squared
+  )))
+
+load_conf1 <- t(cbind(
+  c(
+    coeftest(lm1 <- lm(`1M`~ConfFactor1, data=dataset_con), vcov=vcovHC)[2,1:2],
+    R2 = summary(lm1)$r.squared
+  ),
+  
+  c(
+    coeftest(lm1 <- lm(`3M`~ConfFactor1, data=dataset_con), vcov=vcovHC)[2,1:2],
+    R2 = summary(lm1)$r.squared
+  ),
+  
+  c(
+    coeftest(lm1 <- lm(`6M`~ConfFactor1, data=dataset_con), vcov=vcovHC)[2,1:2],
+    R2 = summary(lm1)$r.squared
+  ),
+  
+  c(
+    coeftest(lm1 <- lm(`1Y`~ConfFactor1, data=dataset_con), vcov=vcovHC)[2,1:2],
+    R2 = summary(lm1)$r.squared
+  ),
+  
+  c(
+    coeftest(lm1 <- lm(`2Y`~ConfFactor1, data=dataset_con), vcov=vcovHC)[2,1:2],
+    R2 = summary(lm1)$r.squared
+  ),
+  
+  c(
+    coeftest(lm1 <- lm(`5Y`~ConfFactor1, data=dataset_con), vcov=vcovHC)[2,1:2],
+    R2 = summary(lm1)$r.squared
+  ),
+  
+  c(
+    coeftest(lm1 <- lm(`10Y`~ConfFactor1, data=dataset_con), vcov=vcovHC)[2,1:2],
+    R2 = summary(lm1)$r.squared
+  )))
+
+
+load_conf2 <- t(cbind(
+  c(
+    coeftest(lm1 <- lm(`1M`~ConfFactor2, data=dataset_con), vcov=vcovHC)[2,1:2],
+    R2 = summary(lm1)$r.squared
+  ),
+  
+  c(
+    coeftest(lm1 <- lm(`3M`~ConfFactor2, data=dataset_con), vcov=vcovHC)[2,1:2],
+    R2 = summary(lm1)$r.squared
+  ),
+  
+  c(
+    coeftest(lm1 <- lm(`6M`~ConfFactor2, data=dataset_con), vcov=vcovHC)[2,1:2],
+    R2 = summary(lm1)$r.squared
+  ),
+  
+  c(
+    coeftest(lm1 <- lm(`1Y`~ConfFactor2, data=dataset_con), vcov=vcovHC)[2,1:2],
+    R2 = summary(lm1)$r.squared
+  ),
+  
+  c(
+    coeftest(lm1 <- lm(`2Y`~ConfFactor2, data=dataset_con), vcov=vcovHC)[2,1:2],
+    R2 = summary(lm1)$r.squared
+  ),
+  
+  c(
+    coeftest(lm1 <- lm(`5Y`~ConfFactor2, data=dataset_con), vcov=vcovHC)[2,1:2],
+    R2 = summary(lm1)$r.squared
+  ),
+  
+  c(
+    coeftest(lm1 <- lm(`10Y`~ConfFactor2, data=dataset_con), vcov=vcovHC)[2,1:2],
+    R2 = summary(lm1)$r.squared
+  )))
+
+
+load_conf3 <- t(cbind(
+  c(
+    coeftest(lm1 <- lm(`1M`~ConfFactor3, data=dataset_con), vcov=vcovHC)[2,1:2],
+    R2 = summary(lm1)$r.squared
+  ),
+  
+  c(
+    coeftest(lm1 <- lm(`3M`~ConfFactor3, data=dataset_con), vcov=vcovHC)[2,1:2],
+    R2 = summary(lm1)$r.squared
+  ),
+  
+  c(
+    coeftest(lm1 <- lm(`6M`~ConfFactor3, data=dataset_con), vcov=vcovHC)[2,1:2],
+    R2 = summary(lm1)$r.squared
+  ),
+  
+  c(
+    coeftest(lm1 <- lm(`1Y`~ConfFactor3, data=dataset_con), vcov=vcovHC)[2,1:2],
+    R2 = summary(lm1)$r.squared
+  ),
+  
+  c(
+    coeftest(lm1 <- lm(`2Y`~ConfFactor3, data=dataset_con), vcov=vcovHC)[2,1:2],
+    R2 = summary(lm1)$r.squared
+  ),
+  
+  c(
+    coeftest(lm1 <- lm(`5Y`~ConfFactor3, data=dataset_con), vcov=vcovHC)[2,1:2],
+    R2 = summary(lm1)$r.squared
+  ),
+  
+  c(
+    coeftest(lm1 <- lm(`10Y`~ConfFactor3, data=dataset_con), vcov=vcovHC)[2,1:2],
+    R2 = summary(lm1)$r.squared
+  )))
+
+write.csv(as.data.frame(load_rel1) %>% mutate(mat = c("1M", "3M", "6M", "1Y", "2Y", "5Y", "10Y")),
+          file = paste0(d_path, "loadings_rel1_factor.csv"), row.names = F)
+
+write.csv(as.data.frame(load_conf1) %>% mutate(mat = c("1M", "3M", "6M", "1Y", "2Y", "5Y", "10Y")),
+          file = paste0(d_path, "loadings_con1_factor.csv"), row.names = F)
+
+write.csv(as.data.frame(load_conf2) %>% mutate(mat = c("1M", "3M", "6M", "1Y", "2Y", "5Y", "10Y")),
+          file = paste0(d_path, "loadings_con2_factor.csv"), row.names = F)
+
+write.csv(as.data.frame(load_conf3) %>% mutate(mat = c("1M", "3M", "6M", "1Y", "2Y", "5Y", "10Y")),
+          file = paste0(d_path, "loadings_con3_factor.csv"), row.names = F)
+
+write.csv(dataset_rel, file = paste0(d_path, "dataset_rel.csv"), row.names = F)
+write.csv(dataset_con, file = paste0(d_path, "dataset_con.csv"), row.names = F)
+
+## Create ILSdaily
+
+ils <- read_csv(paste0(s_path, "04ilsdaily.csv"))
+ils <- ils %>% dplyr::select(Date, DOIS2Ydy, DILS2Ydy, DLOGSTOXXdy)
+ils <- inner_join(ils, dataset_con %>% select(Date, ConfFactor1, ConfFactor2, ConfFactor3))
+
+write_csv(ils, paste0(d_path, "ilsdailydata.csv"))

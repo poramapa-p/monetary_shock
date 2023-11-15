@@ -1,0 +1,11 @@
+Carlo Altavilla, Luca Brugnolini, Refet S. Gürkaynak, Roberto Motto, Giuseppe Ragusa,
+Measuring euro area monetary policy,
+Journal of Monetary Economics,
+Volume 108,
+2019,
+Pages 162-179,
+ISSN 0304-3932,
+https://doi.org/10.1016/j.jmoneco.2019.08.016.
+(https://www.sciencedirect.com/science/article/pii/S0304393219301497)
+Abstract: We map ECB policy communication into yield curve changes and study the information flow on policy dates. A byproduct is the publicly available Euro Area Monetary Policy Event-Study Database (EA-MPD), containing intraday asset price changes. We find that Policy Target, Forward Guidance and Quantitative Easing factors capture about all the variation in the yield curve, with different factors appearing in the windows covering the policy decision announcement and the press conference, and having time-varying variance shares. We study sovereign yields, exchange rates, stock prices, persistence of effects and response asymmetry. Our methodology can be implemented for any policy-related event.
+Keywords: G14 ECB Policy surprise; Event-study; Intraday; Persistence; Asymmetry
